@@ -1,0 +1,1516 @@
+<!DOCTYPE html>
+<html lang="vi" class="light overscroll-none">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+    <title>CASE TEST TDC</title>
+    <link rel="preconnect" href="https://drive.google.com">
+    <link rel="preconnect" href="https://docs.google.com">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0f172a">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3004/3004458.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="TDC Care">
+    <link rel="preconnect" href="https://drive.google.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700;900&family=Plus+Jakarta+Sans:wght@500;700;800&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { darkMode: 'class', theme: { extend: { colors: { primary: '#0f172a' } } } }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+    <style>
+        * { -webkit-tap-highlight-color: transparent; outline: none; }
+        .fast-render { will-change: transform; transform: translateZ(0); }
+
+        body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; -webkit-tap-highlight-color: transparent; }
+        h1, h2, h3, .font-heading { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+        .app-header { padding-top: env(safe-area-inset-top); }
+        .app-footer { padding-bottom: calc(env(safe-area-inset-bottom) + 20px); }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* Global Premium Glass Scrollbar */
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; margin: 4px; }
+        ::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.3); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(148, 163, 184, 0.6); }
+        .dark ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); }
+        .dark ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.3); }
+        ::-webkit-scrollbar-button { display: none; } /* Hide ugly up/down arrows on Windows */
+
+        /* Glass Tabs */
+        .tab-active {
+            background: rgba(255,255,255,0.2) !important;
+            x-backdrop-filter: blur(10px);
+            -webkit-x-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.4) !important;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transform: translateZ(0);
+            will-change: transform;
+        }
+
+        /* Folder Style Additions */
+        .pt-safe { padding-top: env(safe-area-inset-top); }
+        /* Book Cover 3D Shadows */
+        .book-shadow {
+            box-shadow: 
+                -5px 0 10px rgba(0,0,0,0.1), /* Left soft shadow */
+                2px 4px 8px rgba(0,0,0,0.1);
+        }
+        .folder-shadow {
+            box-shadow: 0 4px 6px rgba(0,0,0,0.08);
+        }
+        .dark .folder-shadow {
+            box-shadow: 0 5px 12px rgba(0,0,0,0.4);
+        }
+        @media (hover: none) {
+            /* Tắt bóng đổ (Drop Shadow) nặng trên iPad/Mobile vì hệ điều hành gánh cực kỳ kém */
+            .folder-shadow { filter: none !important; }
+        }
+        .folder-card-wrapper {
+            perspective: 1000px;
+            transform: translateZ(0); 
+            backface-visibility: hidden;
+        }
+        .smooth-scroll-x {
+            -webkit-overflow-scrolling: touch;
+            transform: translateZ(0);
+        }
+        .folder-mask {
+            border-radius: 16px;
+            -webkit-clip-path: polygon(0 0, 42.5% 0, 58.4% 9.5%, 100% 9.5%, 100% 100%, 0 100%);
+            clip-path: polygon(0 0, 42.5% 0, 58.4% 9.5%, 100% 9.5%, 100% 100%, 0 100%);
+        }
+
+        .ebook-gradient-1 { background: linear-gradient(135deg, #1e3a8a, #3b82f6); }
+        .ebook-gradient-2 { background: linear-gradient(135deg, #4c1d95, #8b5cf6); }
+        .ebook-gradient-3 { background: linear-gradient(135deg, #064e3b, #10b981); }
+        .ebook-gradient-4 { background: linear-gradient(135deg, #7f1d1d, #ef4444); }
+        .ebook-gradient-5 { background: linear-gradient(135deg, #78350f, #f59e0b); }
+
+        /* Promo Banner Styles */
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        .marquee-wrapper {
+            display: flex;
+            width: max-content;
+            animation: marquee 40s linear infinite;
+        }
+        .group:hover .marquee-wrapper {
+            animation-play-state: paused;
+        }
+        .mask-edges {
+            -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+            mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+        }
+        @keyframes gradient-flow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .animated-mesh-bg {
+            background: linear-gradient(-45deg, #0f172a, #172554, #083344, #1e1b4b, #020617);
+            background-size: 300% 300%;
+            animation: gradient-flow 12s ease infinite;
+        }
+        @keyframes float-1 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -50px) scale(1.2); }
+            66% { transform: translate(-20px, 20px) scale(0.8); }
+        }
+        @keyframes float-2 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(-30px, 50px) scale(1.2); }
+            66% { transform: translate(20px, -20px) scale(0.8); }
+        }
+        @keyframes float-3 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(40px, 30px) scale(1.1); }
+        }
+
+        /* Micro-interactions & Performance */
+        .perf-card {
+            content-visibility: auto;
+            contain-intrinsic-size: 150px;
+        }
+        @keyframes shine {
+            0% { transform: translateX(-150%) skewX(-20deg); }
+            100% { transform: translateX(200%) skewX(-20deg); }
+        }
+    </style>
+
+    <!-- AUTH LOGIC V4 -->
+    <script>
+        const AUTH_API = "https://script.google.com/macros/s/AKfycbzUNA96SRsLQv7hlu83GAx6L85kEia8S52KY7nCRfWLlpJslMAT_Z-n9PMOoG_RNW6Q/exec";
+        
+        function generateValidSegment() {
+            var seg = Math.random().toString(36).substring(2, 6).toUpperCase();
+            while (seg.length < 4) {
+                seg += Math.floor(Math.random() * 10).toString();
+            }
+            return seg.substring(0, 4);
+        }
+
+        let deviceId = localStorage.getItem('TDC_DEVICE_ID_SINHLY');
+        let isApproved = localStorage.getItem('TDC_APPROVED_SINHLY') === 'true';
+        var idPattern = /^(?:TDC-)?[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}$/;
+        
+        if (!deviceId || (!idPattern.test(deviceId) && !isApproved)) {
+            deviceId = "TDC-" + generateValidSegment() + "-" + generateValidSegment();
+            localStorage.setItem('TDC_DEVICE_ID_SINHLY', deviceId);
+            localStorage.removeItem('TDC_APPROVED_SINHLY');
+        }
+
+        function checkAuth() {
+            if (localStorage.getItem('TDC_APPROVED_SINHLY') === 'true') {
+                setInterval(silentVerify, 10000); 
+                return;
+            }
+            document.addEventListener('DOMContentLoaded', () => {
+                document.getElementById('lock-screen').style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+                verifyWithServer();
+            });
+        }
+
+        function verifyWithServer() {
+            const statusText = document.getElementById('lock-status');
+            const lockContainer = document.getElementById('lock-container');
+            const lockScreen = document.getElementById('lock-screen');
+            if(!statusText) return;
+            statusText.innerText = "Đang mã hóa tín hiệu Server...";
+            lockContainer.classList.add('hidden');
+
+            fetch(AUTH_API + "?id=" + deviceId + "&t=" + new Date().getTime(), { cache: "no-store" })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.status === "approved" || data.status === "ok") {
+                        localStorage.setItem('TDC_APPROVED_SINHLY', 'true');
+                        lockScreen.style.opacity = '0';
+                        setTimeout(() => { lockScreen.style.display = 'none'; document.body.style.overflow = 'auto'; }, 500);
+                    } else {
+                        statusText.innerHTML = "Chào mừng Sinh Viên Y Khoa.<br>Vui lòng sao chép mã thiết bị để kích hoạt.";
+                        document.getElementById('lock-device-code').value = deviceId;
+                        lockContainer.classList.remove('hidden');
+                    }
+                })
+                .catch(e => {
+                    statusText.innerHTML = "Offline.<br>Yêu cầu mạng di động/WiFi để xác thực khóa.";
+                    lockContainer.classList.remove('hidden');
+                });
+        }
+
+        function silentVerify() {
+            if(navigator.onLine && localStorage.getItem('TDC_APPROVED_SINHLY') === 'true') {
+                fetch(AUTH_API + "?id=" + deviceId + "&t=" + new Date().getTime(), { cache: "no-store" }).then(r => r.json()).then(data => {
+                    if(data.status === "locked" || data.status === "error") {
+                        localStorage.setItem('TDC_APPROVED_SINHLY', 'false'); window.location.reload();
+                    }
+                }).catch(e => {});
+            }
+        }
+
+        function copyDeviceId() {
+            try {
+                if (navigator.clipboard && window.isSecureContext) {
+                    navigator.clipboard.writeText(deviceId);
+                } else {
+                    const textArea = document.createElement("textarea");
+                    textArea.value = deviceId;
+                    document.body.appendChild(textArea);
+                    textArea.focus();
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                }
+            } catch(err) {
+                console.error('Copy failed', err);
+            }
+            const btn = document.getElementById('copyBtn');
+            btn.innerHTML = '<i class="fas fa-check text-green-400 text-xl"></i> <span class="tracking-wide text-green-400">ĐÃ LƯU VÀO BỘ NHỚ</span>';
+            setTimeout(() => { btn.innerHTML = '<div class="absolute inset-0 w-1/4 bg-white/10 -skew-x-12 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]"></div><i class="fas fa-paste text-xl text-rose-400"></i> <span class="tracking-wide">SAO CHÉP MÃ THIẾT BỊ</span>'; }, 3000);
+        }
+
+        checkAuth();
+    </script>
+
+    <!-- Google tag (gtag.js) Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-C6RSXNG6J3"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-C6RSXNG6J3');
+    </script>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+<style>
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .animated-hero-bg {
+            background: linear-gradient(-45deg, #0f172a, #1e3a8a, #4c1d95, #020617, #0f172a);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+        }
+
+        /* Micro-interactions & Performance */
+        .perf-card {
+            content-visibility: auto;
+            contain-intrinsic-size: 150px;
+        }
+        @keyframes shine {
+            0% { transform: translateX(-150%) skewX(-20deg); }
+            100% { transform: translateX(200%) skewX(-20deg); }
+        }
+    </style>
+    
+    
+    <!-- Vanilla Tilt ONLY -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
+    <style>
+        /* Smooth CSS Aurora */
+        @keyframes aurora1 {
+            0% { transform: translate(-10%, -10%) scale(1) rotate(0deg); opacity: 0.5; }
+            50% { transform: translate(10%, 10%) scale(1.1) rotate(180deg); opacity: 0.8; }
+            100% { transform: translate(-10%, -10%) scale(1) rotate(360deg); opacity: 0.5; }
+        }
+        @keyframes aurora2 {
+            0% { transform: translate(10%, 10%) scale(1) rotate(0deg); opacity: 0.6; }
+            50% { transform: translate(-10%, -10%) scale(1.2) rotate(-180deg); opacity: 0.9; }
+            100% { transform: translate(10%, 10%) scale(1) rotate(-360deg); opacity: 0.6; }
+        }
+        .aurora-blob-1 {
+            position: absolute;
+            top: -20%; left: -10%; width: 120%; height: 120%;
+            background: radial-gradient(circle, rgba(16,185,129,0.3) 0%, transparent 50%);
+            animation: aurora1 15s infinite linear;
+            z-index: 0; pointer-events: none;
+            filter: blur(40px);
+        }
+        .aurora-blob-2 {
+            position: absolute;
+            bottom: -20%; right: -10%; width: 100%; height: 100%;
+            background: radial-gradient(circle, rgba(14,165,233,0.3) 0%, transparent 50%);
+            animation: aurora2 12s infinite linear;
+            z-index: 0; pointer-events: none;
+            filter: blur(40px);
+        }
+        .smooth-aurora-bg {
+            background-color: #0f172a; /* Slate 900 base */
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Micro-interactions & Performance */
+        .perf-card {
+            content-visibility: auto;
+            contain-intrinsic-size: 150px;
+        }
+        @keyframes shine {
+            0% { transform: translateX(-150%) skewX(-20deg); }
+            100% { transform: translateX(200%) skewX(-20deg); }
+        }
+    </style>
+
+    <!-- SECURITY SCRIPT -->
+    <script>
+        // Disable Right Click
+        document.addEventListener('contextmenu', event => event.preventDefault());
+        
+        // Disable Text Selection and Copy
+        document.addEventListener('selectstart', event => event.preventDefault());
+        document.addEventListener('copy', event => {
+            event.preventDefault();
+            alert("Tài liệu nội bộ: Không được phép sao chép!");
+            if (event.clipboardData) {
+                event.clipboardData.setData('text/plain', 'Tài liệu bản quyền TEAMDRCAT');
+            }
+        });
+        
+        // Disable DevTools shortcuts & Print
+        document.addEventListener('keydown', function(e) {
+            // F12
+            if(e.key === 'F12' || e.keyCode === 123) {
+                e.preventDefault();
+                return false;
+            }
+            // Ctrl+Shift+I / J / C
+            if(e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key.toUpperCase())) {
+                e.preventDefault();
+                return false;
+            }
+            // Ctrl+U (View Source)
+            if(e.ctrlKey && e.key.toUpperCase() === 'U') {
+                e.preventDefault();
+                return false;
+            }
+            // Ctrl+P (Print)
+            if(e.ctrlKey && e.key.toUpperCase() === 'P') {
+                e.preventDefault();
+                return false;
+            }
+            // Ctrl+S (Save)
+            if(e.ctrlKey && e.key.toUpperCase() === 'S') {
+                e.preventDefault();
+                return false;
+            }
+        });
+        
+        // Anti-Debugging
+        setInterval(function() {
+            var before = new Date().getTime();
+            debugger;
+            var after = new Date().getTime();
+            if (after - before > 100) {
+                // User has DevTools open
+                document.body.innerHTML = "<div style='text-align:center; padding: 50px; font-family: sans-serif; font-weight: bold;'>Please close Developer Tools to continue using this application.</div>";
+            }
+        }, 1000);
+    </script>
+    <!-- END SECURITY SCRIPT -->
+
+
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1030830160852697"
+     crossorigin="anonymous"></script>
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-C6RSXNG6J3"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-C6RSXNG6J3');
+    </script>
+</head>
+
+
+<body class="bg-gray-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen app-footer transition-colors duration-300 overscroll-none touch-pan-x touch-pan-y">
+
+    <!-- THE LOCK SCREEN V4 (CYBER SECURITY) -->
+    <div id="lock-screen" class="fixed inset-0 z-[100000] bg-slate-900 flex-col items-center justify-center p-6 text-center select-none transition-opacity duration-500" style="display: none; background: radial-gradient(circle at center, #1e293b 0%, #020617 100%);">
+        
+        <!-- Lock Screen Content -->
+        <div class="relative z-10 w-full flex flex-col items-center">
+            <div class="relative w-40 h-40 mb-8 flex items-center justify-center">
+                <div class="absolute inset-0 rounded-full border border-rose-500/30 animate-[ping_3s_infinite]"></div>
+                <div class="absolute inset-4 rounded-full border border-blue-400/50 animate-[ping_2s_infinite]"></div>
+                <div class="w-24 h-24 bg-gradient-to-br from-rose-600 to-red-800 rounded-full flex items-center justify-center shadow-[0_0_30px_rgba(225,29,72,0.6)] border border-rose-300 z-10 relative overflow-hidden">
+                    <i class="fas fa-fingerprint text-5xl text-blue-100 opacity-90"></i>
+                    <div class="absolute top-0 w-full h-1 bg-white shadow-[0_0_15px_white] animate-[radar_2s_linear_infinite]"></div>
+                </div>
+                <div class="absolute -top-2 -right-2 w-10 h-10 bg-slate-800/80 x-backdrop-blur-sm rounded-full border border-slate-600 flex items-center justify-center shadow-[0_0_15px_rgba(16,185,129,0.5)] z-20">
+                    <i class="fas fa-stethoscope text-emerald-400 text-sm"></i>
+                </div>
+            </div>
+            
+            <h2 class="font-heading text-transparent bg-clip-text bg-gradient-to-r from-teal-200 via-emerald-400 to-green-300 font-extrabold text-3xl mb-2 tracking-[0.05em]" style="text-shadow: 0 0 30px rgba(16,185,129,0.4);">TÀI LIỆU NỘI BỘ</h2>
+            <p id="lock-status" class="text-slate-300 text-[13px] mb-8 max-w-xs font-medium bg-slate-800/90 x-backdrop-blur-md py-2 px-6 rounded-full border border-slate-700/50 shadow-inner">Initializing protocols...</p>
+            
+            <div id="lock-container" class="hidden flex flex-col items-center w-full max-w-sm">
+                <div class="relative w-full mb-6 group cursor-pointer" onclick="copyDeviceId()">
+                    <div class="absolute inset-0 bg-rose-500/10 rounded-2xl blur-xl group-hover:bg-rose-500/30 transition-all duration-500"></div>
+                    <input type="text" id="lock-device-code" class="w-full bg-slate-900/95 x-backdrop-blur-lg border border-slate-700/50 hover:border-rose-500/80 text-center text-rose-300 font-black text-3xl tracking-[0.15em] rounded-2xl py-5 relative z-10 select-none cursor-pointer shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)] transition-all duration-300" readonly>
+                    <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-blue-900 text-blue-200 text-[10px] font-bold px-3 py-1 rounded-full z-20 border border-blue-700 shadow-lg tracking-widest uppercase">DEVICE ID</div>
+                </div>
+                
+                <button id="copyBtn" onclick="copyDeviceId()" class="relative w-full overflow-hidden group bg-slate-800/80 x-backdrop-blur-sm hover:bg-slate-700/90 text-white font-bold py-4 px-4 rounded-xl shadow-[0_10px_20px_rgba(0,0,0,0.3)] border border-slate-600 transition-all mb-4 flex items-center justify-center gap-3">
+                    <div class="absolute inset-0 w-1/4 bg-white/5 -skew-x-12 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]"></div>
+                    <i class="fas fa-paste text-xl text-rose-400"></i> <span class="tracking-wide">SAO CHÉP MÃ THIẾT BỊ</span>
+                </button>
+                <button onclick="verifyWithServer()" class="w-full bg-transparent hover:bg-blue-900/20 text-cyan-500 hover:text-rose-400 font-bold py-3 px-4 border border-blue-900/30 hover:border-rose-500/40 rounded-xl transition-all flex items-center justify-center gap-2 group">
+                    <i class="fas fa-sync-alt group-hover:rotate-180 transition-transform duration-500"></i> Xác minh
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN APP LOBBY V4 -->
+    <header class="sticky top-0 z-40 app-header bg-white/70 dark:bg-slate-950/70 x-backdrop-blur-lg border-b border-black/5 dark:border-white/5 shadow-sm transition-all duration-500">
+        <div class="px-5 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-white to-slate-100 dark:from-slate-800 dark:to-slate-900 rounded-[14px] shadow-sm flex items-center justify-center border border-slate-200 dark:border-slate-800 p-2">
+                     <i class="fas fa-staff-snake text-[28px] text-transparent bg-clip-text bg-gradient-to-t from-sky-400 to-blue-600 filter drop-shadow-sm"></i>
+                </div>
+                <div>
+                    <h1 class="font-heading font-black text-xl tracking-tight text-slate-800 dark:text-white">TEAMDRCAT</h1>
+                    <p id="networkStatus" class="text-[9px] uppercase font-bold tracking-widest text-emerald-500 flex items-center gap-1.5 transition-colors"><span id="networkDot" class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse transition-colors"></span> <span id="networkText">ONLINE</span></p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2 shrink-0">
+                <button id="showBookmarks" class="w-10 h-10 rounded-full bg-slate-100/80 dark:bg-slate-800/80 flex items-center justify-center text-slate-400 hover:text-red-500 relative transition-colors shadow-inner border border-white dark:border-slate-700">
+                    <i class="fas fa-heart"></i>
+                    <span id="bookmarkCount" class="absolute -top-1 -right-1 bg-gradient-to-tr from-red-600 to-pink-500 text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full hidden shadow-lg">0</span>
+                </button>
+                <button id="themeToggle" class="relative w-10 h-10 rounded-full bg-slate-100/80 dark:bg-slate-800/80 flex items-center justify-center text-slate-600 dark:text-slate-300 transition-all duration-300 shadow-inner border border-white dark:border-slate-700 active:scale-90 ">
+                    <i class="fas fa-moon absolute transition-all duration-500 ease-in-out transform dark:-rotate-90 dark:scale-50 dark:opacity-0 text-indigo-500"></i>
+                    <i class="fas fa-sun absolute transition-all duration-500 ease-in-out transform rotate-90 scale-50 opacity-0 dark:rotate-0 dark:scale-100 dark:opacity-100 text-amber-500"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="relative z-10 pb-24">
+        
+        <!-- YBOOK PROMO BANNER -->
+        <div class="mx-2 mt-2 mb-2 overflow-hidden rounded-2xl bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-500 p-[1px] shadow-lg relative z-20 group">
+            <div class="relative bg-white dark:bg-slate-900 rounded-[15px] overflow-hidden px-3 py-2.5 flex items-center">
+                <div class="absolute inset-0 bg-gradient-to-r from-cyan-400/15 to-indigo-500/15 blur opacity-60"></div>
+                <div class="w-8 flex-shrink-0 z-10 flex items-center justify-center border-r border-slate-200 dark:border-slate-700/80 mr-3 pr-2">
+                    <i class="fas fa-gift text-cyan-500 dark:text-cyan-400 text-lg animate-bounce"></i>
+                </div>
+                <div class="flex-1 overflow-hidden relative z-10 mask-edges">
+                    <div class="marquee-wrapper">
+                                                <!-- Bản sao 1 -->
+                        <div class="whitespace-nowrap text-[14.5px] pr-10 flex-shrink-0 flex items-center">
+                            <i class="fas fa-bolt text-amber-500 mr-2 drop-shadow-[0_0_8px_rgba(245,158,11,0.6)] animate-pulse"></i>
+                            <span class="font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-500 drop-shadow-sm uppercase tracking-[0.05em] mr-2">CHÚC CÁC EM HỌC TẬP HIỆU QUẢ.</span>
+                            <span class="font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-teal-400 to-emerald-500 uppercase tracking-[0.08em] drop-shadow-md mr-2">MAY MẮN CHỈ ĐẾN VỚI MỘT TRÍ TUỆ CHUYÊN CẦN.</span>
+                            <span class="font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-orange-500 to-red-500 uppercase tracking-[0.1em] drop-shadow-md">CỐ LÊN NHÉ !!</span>
+                            <i class="fas fa-sparkles text-yellow-400 ml-3 animate-bounce drop-shadow-[0_0_8px_rgba(250,204,21,0.6)]"></i>
+                        </div>
+                        <!-- Bản sao 2 (Để vòng lặp chạy mượt) -->
+                        <div class="whitespace-nowrap text-[14.5px] pr-10 flex-shrink-0 flex items-center" aria-hidden="true">
+                            <i class="fas fa-bolt text-amber-500 mr-2 drop-shadow-[0_0_8px_rgba(245,158,11,0.6)] animate-pulse"></i>
+                            <span class="font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-500 drop-shadow-sm uppercase tracking-[0.05em] mr-2">CHÚC CÁC EM HỌC TẬP HIỆU QUẢ.</span>
+                            <span class="font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-teal-400 to-emerald-500 uppercase tracking-[0.08em] drop-shadow-md mr-2">MAY MẮN CHỈ ĐẾN VỚI MỘT TRÍ TUỆ CHUYÊN CẦN.</span>
+                            <span class="font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-orange-500 to-red-500 uppercase tracking-[0.1em] drop-shadow-md">CỐ LÊN NHÉ !!</span>
+                            <i class="fas fa-sparkles text-yellow-400 ml-3 animate-bounce drop-shadow-[0_0_8px_rgba(250,204,21,0.6)]"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hero Mesh Gradient Section -->
+        <div class="relative px-6 pt-8 pb-14 animated-mesh-bg text-white rounded-[2.5rem] shadow-2xl mb-8 mx-2 border border-slate-800 overflow-hidden">
+            
+            <div class="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/blood-cells.png')]"></div>
+            <!-- Animated glowing orbs -->
+            <div class="absolute top-0 right-0 w-64 h-64 bg-cyan-500/25 rounded-full blur-3xl" style="animation: float-1 8s ease-in-out infinite;"></div>
+            <div class="absolute bottom-0 left-0 w-64 h-64 bg-indigo-500/30 rounded-full blur-3xl" style="animation: float-2 10s ease-in-out infinite;"></div>
+            <div class="absolute top-1/2 left-1/2 w-48 h-48 bg-purple-500/25 rounded-full blur-3xl" style="animation: float-3 12s ease-in-out infinite;"></div>
+            <div class="absolute -bottom-10 right-10 w-56 h-56 bg-emerald-500/20 rounded-full blur-3xl" style="animation: float-1 9s ease-in-out infinite reverse;"></div>
+            
+            <div class="relative z-10">
+                <div class="flex flex-col md:flex-row items-center md:items-start justify-between gap-6">
+                    <div class="flex-1">
+                        
+                        <h2 class="font-heading text-[2.5rem] sm:text-[42px] font-extrabold mb-4 leading-[1.1] tracking-tight text-white drop-shadow-lg">
+                            TRẮC NGHIỆM<br>
+                            <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 to-teal-400 filter drop-shadow-md">SINH LÝ</span>
+                        </h2>
+
+                        
+                        <!-- Search bar Glass -->
+                        <div class="relative max-w-md group mb-6" data-tilt data-tilt-max="10" data-tilt-speed="400" data-tilt-perspective="1000" data-tilt-glare data-tilt-max-glare="0.5" style="transform-style: preserve-3d;">
+                            <div class="absolute inset-0 bg-white/5 rounded-2xl blur-lg group-hover:bg-white/10 transition-all duration-500 opacity-50"></div>
+                            <i class="fas fa-search absolute left-5 top-1/2 -translate-y-1/2 text-white/50 text-lg z-20"></i>
+                            <input type="text" id="searchInput" placeholder="Tìm kiếm bài test..." 
+                                   class="w-full bg-white/10 x-backdrop-blur-xl  text-white placeholder-white/40 border border-white/10 rounded-2xl py-4 pl-14 pr-4 focus:outline-none focus:ring-2 focus:ring-cyan-400/50 transition-colors duration-300 font-medium shadow-[inset_0_2px_10px_rgba(0,0,0,0.2)] relative z-10">
+                        </div>
+                        
+                        <!-- Library Action Buttons -->
+                        <div class="flex flex-col sm:flex-row gap-3 w-full max-w-xl mt-2 mb-2 relative z-10">
+                            <button onclick="openEbookLibrary()" data-tilt data-tilt-max="15" data-tilt-speed="300" data-tilt-perspective="1000" data-tilt-glare data-tilt-max-glare="0.8" style="transform-style: preserve-3d;" class="flex-1 flex items-center justify-between bg-white/10 hover:bg-white/10 border border-white/20 rounded-2xl p-4 transition-all duration-300 shadow-xl group cursor-pointer active:scale-[0.98]">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-inner border border-white/10">
+                                        <i class="fas fa-book-open text-white"></i>
+                                    </div>
+                                    <div class="text-left">
+                                        <h3 class="text-white font-bold text-[13.5px] sm:text-[15px] tracking-wide">GIÁO TRÌNH SINH LÝ <span class="bg-clip-text text-transparent bg-gradient-to-r from-amber-300 to-amber-500 font-extrabold filter drop-shadow">Y HÀ NỘI</span></h3>
+                                    </div>
+                                </div>
+                                <i class="fas fa-chevron-right text-white/50 group-hover:text-white group-hover:translate-x-1 transition-all"></i>
+                            </button>
+                            <button onclick="openNetterLibrary()" data-tilt data-tilt-max="15" data-tilt-speed="300" data-tilt-perspective="1000" data-tilt-glare data-tilt-max-glare="0.8" style="transform-style: preserve-3d;" class="flex-1 flex items-center justify-between bg-white/10 hover:bg-white/10 border border-white/20 rounded-2xl p-4 transition-all duration-300 shadow-xl group cursor-pointer active:scale-[0.98]">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-inner border border-white/10">
+                                        <i class="fas fa-book-medical text-white"></i>
+                                    </div>
+                                    <div class="text-left">
+                                        <h3 class="text-white font-bold text-[13.5px] sm:text-[15px] tracking-wide">GUYTON <span class="bg-clip-text text-transparent bg-gradient-to-r from-sky-300 to-blue-400 font-extrabold filter drop-shadow">15TH</span></h3>
+                                    </div>
+                                </div>
+                                <i class="fas fa-chevron-right text-white/50 group-hover:text-white group-hover:translate-x-1 transition-all"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Category Pills (Moved UP) -->
+                <div class="mt-8 -ml-2 -mr-2 relative z-20">
+                    <div class="overflow-x-auto no-scrollbar  will-change-scroll whitespace-nowrap flex gap-2 pb-2 pt-2 px-3" id="categoryTabs">
+                        <!-- JS renders categories here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Stats Mini Header -->
+        <div class="px-5 mt-10 mb-5 flex items-center justify-between">
+            <div>
+                <h3 id="listTitle" class="font-heading font-black text-xl text-slate-800 dark:text-white capitalize">Tất cả bài học</h3>
+                <p class="text-xs font-semibold text-slate-400 mt-0.5"><span id="completedStat">0</span> / 17 Bài đã xong</p>
+            </div>
+            <div class="w-24 h-2 bg-slate-200/50 dark:bg-slate-800 rounded-full overflow-hidden shadow-inner">
+                <div class="h-full bg-gradient-to-r from-emerald-400 to-teal-500 w-0 transition-all duration-1000 ease-out" id="progressBar"></div>
+            </div>
+        </div>
+
+        <!-- Case Cards (App Store Style) -->
+        <div class="px-5 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4" id="caseList">
+            <!-- Rendered via JS -->
+        </div>
+        
+        <div id="noResults" class="hidden text-center py-16 opacity-40 grayscale">
+            <i class="fas fa-box-open text-5xl mb-4 text-slate-400"></i>
+            <p class="font-medium text-slate-500">Chưa tìm thấy dữ liệu phù hợp.</p>
+        </div>
+    </main>
+
+
+    <!-- EBOOK LIBRARY MODAL V3 (Apple Books UI) -->
+    <div id="ebookLibrary" class="fixed inset-0 z-[60] bg-slate-50 dark:bg-slate-950 flex flex-col transition-transform duration-300 ease-out translate-y-full overflow-hidden pointer-events-none  ">
+        
+        <!-- Dynamic Cinematic Video Background - Seamless Double Buffer -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-0 bg-slate-950 overflow-hidden">
+            <video id="libraryBgVideo1" autoplay muted playsinline preload="auto" class="absolute inset-0 w-full h-full object-cover object-center opacity-100 transition-opacity duration-1000"></video>
+            <video id="libraryBgVideo2" muted playsinline preload="auto" class="absolute inset-0 w-full h-full object-cover object-center opacity-0 transition-opacity duration-1000"></video>
+        </div>
+        <!-- Frosted Glass Overlay adapting to Light/Dark mode -->
+        <div class="absolute inset-0 bg-white/10 dark:bg-black/40 z-0 pointer-events-none transition-colors duration-500"></div>
+
+        <!-- Unified Premium Glass Header & Search -->
+        <div class="relative z-20 flex-none bg-white/10 dark:bg-slate-900/85 x-backdrop-blur-xl border-b border-white/20 dark:border-white/10 pt-safe shadow-[0_4px_30px_rgba(0,0,0,0.1)] ">
+            <!-- Top Row: Title & Close -->
+            <div class="px-5 py-3.5 flex items-center justify-center relative min-h-[60px]">
+                <h2 id="libraryTitle" class="font-heading font-extrabold text-[17px] sm:text-[19px] uppercase tracking-[0.1em] text-slate-800 dark:text-white text-center leading-tight px-9 drop-shadow-md">
+                    BÀI GIẢNG - GIÁO TRÌNH SINH LÝ
+                </h2>
+                <button onclick="closeEbookLibrary()" class="absolute right-4 w-8 h-8 flex-shrink-0 rounded-full bg-slate-200/50 dark:bg-white/10 x-backdrop-blur-md flex items-center justify-center text-slate-700 dark:text-slate-200 hover:bg-rose-500 hover:text-white hover:border-transparent border border-white/20 transition-all duration-300 z-10 shadow-sm">
+                    <i class="fas fa-times text-sm"></i>
+                </button>
+            </div>
+
+            <!-- Bottom Row: Search Bar -->
+            <div class="px-4 pb-4">
+                <div class="relative group max-w-2xl mx-auto">
+                    <i class="fas fa-search absolute left-5 top-1/2 transform -translate-y-1/2 text-slate-500 dark:text-slate-300 group-focus-within:text-rose-600 dark:group-focus-within:text-white transition-colors duration-300 z-20 drop-shadow-sm"></i>
+                    <input type="text" id="ebookSearchInput" placeholder="Tìm tên sách, bệnh học..." class="w-full relative z-10 bg-white/60 dark:bg-black/80 border border-white/40 dark:border-white/10 focus:border-white/80 dark:focus:border-white/40 focus:bg-white/80 dark:focus:bg-black/50 text-slate-900 dark:text-white rounded-full py-3.5 pl-12 pr-6 focus:outline-none focus:ring-4 focus:ring-rose-500/20 dark:focus:ring-white/20 transition-all duration-300 font-medium placeholder-slate-500 dark:placeholder-slate-400 shadow-inner  x-backdrop-blur-md">
+                </div>
+            </div>
+        </div>
+
+        <!-- Bookshelf Categories (Horizontal Scroll) -->
+        <div class="relative z-10 flex-1 overflow-y-auto py-6 pb-24 px-4 overflow-hidden scroll-smooth " style="-webkit-overflow-scrolling: touch;">
+            <div class="flex flex-col gap-10 max-w-5xl mx-auto" id="ebookList">
+                <!-- JS Rendered Horizontal Lists -->
+            </div>
+        </div>
+    </div>
+
+    <!-- BOOK DETAIL BOTTOM SHEET MODAL -->
+    <div id="bookDetailSheet" class="fixed inset-0 z-[70] bg-slate-900/85 dark:bg-black/60 x-backdrop-blur-sm hidden flex flex-col justify-end transition-all duration-300 opacity-0">
+        <!-- Close overlay trigger -->
+        <div class="flex-1 w-full cursor-pointer" onclick="closeBookDetail()"></div>
+        
+        <!-- The Sheet -->
+        <div id="bookDetailPanel" class="w-full bg-white dark:bg-slate-900 rounded-t-3xl shadow-[0_-10px_40px_rgba(0,0,0,0.2)] transform translate-y-full transition-transform duration-500 max-h-[85vh] flex flex-col pointer-events-auto border-t border-slate-200 dark:border-slate-800 relative z-20">
+            <!-- Nút Close X -->
+            <button onclick="closeBookDetail()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 hover:bg-red-500 hover:text-white transition-colors duration-300 z-50">
+                <i class="fas fa-times text-sm"></i>
+            </button>
+            
+            <!-- Handle -->
+            <div class="w-full flex justify-center pt-3 pb-2 cursor-pointer" onclick="closeBookDetail()">
+                <div class="w-12 h-1.5 bg-slate-300 dark:bg-slate-700 rounded-full"></div>
+            </div>
+            
+            <div class="px-6 pb-8 pt-2 overflow-y-auto custom-scrollbar">
+                <div class="flex gap-5 mb-6">
+                    <!-- Dynamic Folder Preview -->
+                    <div class="relative flex-shrink-0 w-[130px] sm:w-[150px] aspect-[1/1.4] folder-shadow">
+                        <div id="bdCover" class="absolute inset-0 folder-mask bg-white/10 dark:bg-black/20 x-backdrop-blur-xl flex flex-col overflow-hidden shadow-[inset_0_1px_1px_rgba(255,255,255,0.2)] border border-white/20">
+                            
+                            <div class="h-[60%] w-full relative flex flex-col p-2 pt-6">
+                                <div id="bdCoverBg" class="absolute inset-0 opacity-40 z-0"></div>
+                                <div class="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-white/50 to-transparent z-20 pointer-events-none"></div>
+                                <div id="bdPattern" class="absolute inset-0 opacity-15 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] bg-[length:200px_200px] z-10"></div>
+                                <div class="flex-1 flex items-center justify-center z-10 min-w-0 w-full overflow-hidden px-1.5">
+                                     <h4 id="bdCoverTitle" class="text-white font-heading font-black text-[13px] sm:text-[14px] leading-[1.35] drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] text-center text-balance overflow-hidden line-clamp-5 w-full">Title</h4>
+                                </div>
+                            </div>
+                            <!-- Panel Đáy Cover -->
+                            <div class="flex-1 w-full p-3 flex flex-col justify-end border-t border-white/10 relative z-20 bg-gradient-to-t from-black/20 dark:from-black/40 to-transparent">
+                                <span class="text-[8px] sm:text-[9px] text-white/60 font-bold mb-0.5 tracking-widest uppercase truncate w-full drop-shadow-md">Y HÀ NỘI</span>
+                                <div class="flex justify-between items-center text-[11px] sm:text-[12px] text-white font-bold w-full min-w-0 drop-shadow-md">
+                                    <span id="bdCoverChap" class="truncate pr-1 drop-shadow-sm flex-1 min-w-0">Category</span>
+                                    <i class="fas fa-chevron-down text-[9px] text-white/50"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex-1 flex flex-col justify-center">
+                        <span id="bdCategory" class="text-[10px] font-black text-cyan-500 uppercase tracking-widest bg-blue-50 dark:bg-blue-900/30 px-2 py-0.5 rounded w-max mb-2">CATEGORY</span>
+                        <h2 id="bdTitle" class="font-heading font-black text-xl text-slate-800 dark:text-white leading-tight mb-2">Tên sách</h2>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 font-medium mb-3">Tài liệu lưu hành nội bộ<br>Hệ thống: TEAMDRCAT</p>
+                        <div class="flex items-center gap-1 text-amber-500 text-xs">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                            <span class="text-slate-400 ml-1">(4.8)</span>
+                        </div>
+                    </div>
+                </div>
+                
+
+                
+                <button id="btnReadNow" class="w-full relative overflow-hidden group bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 text-white font-bold text-lg py-4 px-6 rounded-2xl shadow-md transition-all flex items-center justify-center gap-3">
+                    <div class="absolute inset-0 w-1/4 bg-white/10 -skew-x-12 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]"></div>
+                    <div class="absolute inset-0 bg-rose-400/20 animate-pulse"></div>
+                    <i class="fas fa-book-reader relative z-10 text-xl group-hover:scale-110 transition-transform"></i> <span class="tracking-wide relative z-10">BẮT ĐẦU ĐỌC</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="pdfViewer" class="fixed inset-0 z-[80] bg-black/40 hidden flex-col transition-all duration-300 translate-y-full opacity-0 select-none" style="-webkit-touch-callout: none; -webkit-tap-highlight-color: transparent;">
+        <div class="flex-none bg-black/90 p-4 flex items-center justify-between pt-safe border-b border-white/10 shadow-sm z-20">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-rose-500/80 flex items-center justify-center shadow-lg border border-blue-400/50">
+                    <i class="fas fa-book-medical text-white text-xs"></i>
+                </div>
+                <h3 id="pdfTitle" class="text-white font-bold text-sm tracking-wide line-clamp-1 drop-shadow-md">Giáo trình</h3>
+            </div>
+            <div class="flex items-center gap-2">
+                <a id="pdfExternalLink" href="#" target="_blank" class="w-9 h-9 rounded-full bg-cyan-500/20 hover:bg-rose-500/40 text-rose-300 flex items-center justify-center transition-colors border border-rose-500/30 shadow-sm">
+                    <i class="fas fa-external-link-alt text-xs"></i>
+                </a>
+                <button onclick="closePdfViewer()" class="px-4 py-2 bg-white/10 hover:bg-white/30 text-white rounded-full text-xs font-bold transition-colors cursor-pointer border border-white/10 shadow-sm uppercase tracking-wider">
+                    Xong
+                </button>
+            </div>
+        </div>
+        <div class="w-full relative max-w-5xl mx-auto border-x border-white/10 z-10 overflow-auto block" style="height: calc(100dvh - 65px); -webkit-overflow-scrolling: touch;">
+            <!-- Loading Skeleton -->
+            <div id="pdfLoader" class="absolute inset-0 flex flex-col items-center justify-center bg-black/90 text-white z-20 pointer-events-none transition-opacity duration-300">
+                <i class="fas fa-circle-notch fa-spin text-4xl text-cyan-500 mb-4 drop-shadow-lg"></i>
+                <p class="font-medium animate-pulse text-slate-300 text-sm mb-2">Đang nạp dữ liệu. Hãy chờ tôi vài giây nhé ^^</p>
+                <p class="text-[10px] text-slate-400 max-w-xs text-center uppercase tracking-widest leading-relaxed">Nhấn nút [ <i class="fas fa-external-link-alt mx-1"></i> ] góc phải để mở full màn hình nếu bị lỗi.</p>
+            </div>
+            <iframe id="pdfIframe" src="" class="absolute inset-0 w-full h-full border-0 z-10 bg-white" allowfullscreen></iframe>
+        </div>
+    </div>
+
+    <script>
+
+        
+        function renderEbooks() {
+            let html = "";
+            let term = document.getElementById('ebookSearchInput') ? document.getElementById('ebookSearchInput').value.toLowerCase() : "";
+            
+            const dataSource = window.activeEbookData || EBOOK_CHAPTERS;
+            
+            dataSource.forEach((chapter, chapterIndex) => {
+                let filteredBooks = chapter.books.filter(b => b.title.toLowerCase().includes(term));
+                if (filteredBooks.length === 0) return;
+                
+                html += `
+                <div class="mb-4 animate-fade-rise" style="animation-delay: ${chapterIndex * 0.1}s">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="font-heading font-black text-[17px] text-slate-800 dark:text-white uppercase tracking-wider relative pl-4 border-l-4 border-rose-500 drop-shadow-sm"><span class="absolute -left-[5px] top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-rose-500 shadow-[0_0_10px_rgba(244,63,94,0.6)]"></span>${chapter.chapterName}</h3>
+                        <span class="text-[10px] font-bold text-slate-400 bg-slate-200/50 dark:bg-slate-800/50 px-2 py-1 rounded-md shadow-inner border border-black/5 dark:border-white/5">${filteredBooks.length} Bài</span>
+                    </div>
+                    
+                    <div class="flex gap-5 overflow-x-auto pb-6 pt-6 px-4 -ml-4 snap-x snap-mandatory custom-scrollbar smooth-scroll-x" style="-webkit-overflow-scrolling: touch;">`;
+                
+                filteredBooks.forEach((book, bookIndex) => {
+                    html += `
+                        <div onclick='openBookDetail(${chapterIndex}, ${chapter.books.indexOf(book)})' class="folder-card-wrapper w-[145px] sm:w-[170px] flex-shrink-0 snap-start relative aspect-[1/1.4] cursor-pointer group drop-shadow-[0_8px_16px_rgba(0,0,0,0.5)]" >
+                            
+                            <!-- Bìa folder Main Frame -->
+                            <div class="folder-mask absolute inset-0 z-10 flex flex-col group-hover:-translate-y-1 group-active:scale-[0.98] transition-all duration-300 bg-white/10 dark:bg-black/20 shadow-[inset_0_1px_1px_rgba(255,255,255,0.2)] border border-white/20">
+                                
+                                <div class="h-[60%] w-full relative flex flex-col p-2 pt-6">
+                                    <div class="absolute inset-0 opacity-40 z-0 ${chapter.gradient}"></div>
+                                    <div class="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-white/50 to-transparent z-20 pointer-events-none"></div>
+                                    <div class="absolute inset-0 opacity-20 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] bg-[length:200px_200px] z-10"></div>
+                                    <div class="flex-1 flex items-center justify-center z-10 min-w-0 w-full overflow-hidden px-1.5">
+                                        <h4 class="text-white font-heading font-black text-[13px] sm:text-[14px] leading-[1.35] drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] text-center text-balance overflow-hidden line-clamp-5 w-full">${book.title}</h4>
+                                    </div>
+                                </div>
+                                <div class="flex-1 w-full p-3 flex flex-col justify-end border-t border-white/10 relative z-20 bg-gradient-to-t from-black/20 dark:from-black/40 to-transparent">
+                                    <span class="text-[8px] sm:text-[9px] text-white/50 font-bold mb-0.5 tracking-wider uppercase drop-shadow-md">Y HÀ NỘI</span>
+                                    <div class="flex justify-between items-center text-[11px] sm:text-[12px] text-white font-bold min-w-0 w-full drop-shadow-md">
+                                        <span class="truncate pr-1 uppercase flex-1 min-w-0 drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]">${chapter.chapterName}</span>
+                                        <i class="fas fa-chevron-down text-[9px] text-white/50 group-hover:text-white transition-colors flex-shrink-0"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>`;
+                });
+                
+                html += `</div></div>`;
+            });
+            
+            document.getElementById('ebookList').innerHTML = html || '<div class="text-center py-20 opacity-50 text-slate-500"><i class="fas fa-search-minus text-4xl mb-4"></i><p>Không tìm thấy tài liệu phù hợp</p></div>';
+        }
+
+        // Connect the Ebook search input
+        if (document.getElementById('ebookSearchInput')) {
+            document.getElementById('ebookSearchInput').addEventListener('input', renderEbooks);
+        }
+
+        let currentActivePdf = "";
+
+        function openBookDetail(chapterIndex, bookIndex) {
+            const dataSource = window.activeEbookData || EBOOK_CHAPTERS;
+            const chapter = dataSource[chapterIndex];
+            const book = chapter.books[bookIndex];
+            
+            // Theo dõi Analytics khi mở thư mục sách
+            try { gtag('event', 'view_folder', { 'folder_name': book.title, 'category': chapter.chapterName, 'app_name': 'Sinh Lý' }); } catch(e) {}
+            
+            const sheet = document.getElementById('bookDetailSheet');
+            const panel = document.getElementById('bookDetailPanel');
+            
+            document.getElementById('bdCategory').innerText = chapter.chapterName;
+            document.getElementById('bdTitle').innerText = book.title;
+            document.getElementById('bdCoverTitle').innerText = book.title;
+            document.getElementById('bdCoverChap').innerText = chapter.chapterName;
+            document.getElementById('bdCoverBg').className = "absolute inset-0 opacity-40 z-0 " + chapter.gradient;
+            
+            sheet.classList.remove('hidden');
+            setTimeout(() => {
+                sheet.classList.remove('opacity-0');
+                panel.classList.remove('translate-y-full');
+            }, 10);
+            
+            const btn = document.getElementById('btnReadNow');
+            btn.onclick = () => {
+                // CHỐNG CRASH TỐI THƯỢNG CHO APPLE DEVICESS
+                const isAppleDevice = /Mac|iPod|iPhone|iPad/.test(navigator.platform) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+                
+                closeBookDetail(); // Luôn đóng modal chi tiết
+                
+                if(isAppleDevice || window.innerWidth < 768) {
+                    try { gtag('event', 'view_item_external', { 'item_name': book.title, 'app_name': 'Sinh Lý iOS' }); } catch(e) {}
+                    setTimeout(() => window.open(book.url, '_blank'), 100);
+                } else {
+                    setTimeout(() => openPdfViewer(book.title, book.url), 300);
+                }
+            };
+        }
+
+        function closeBookDetail() {
+            const sheet = document.getElementById('bookDetailSheet');
+            const panel = document.getElementById('bookDetailPanel');
+            panel.classList.add('translate-y-full');
+            sheet.classList.add('opacity-0');
+            setTimeout(() => sheet.classList.add('hidden'), 500);
+        }
+        
+        window.toggleLibraryVideos = function(play) {
+            const vid1 = document.getElementById('libraryBgVideo1');
+            const vid2 = document.getElementById('libraryBgVideo2');
+            if(!vid1 || !vid2) return;
+            const isVid1Active = vid1.classList.contains('opacity-100');
+            if (play) {
+                // iOS Muted Video Unlock Trick
+                if (isVid1Active) {
+                    vid1.play().catch(e=>{});
+                    vid2.play().then(() => { vid2.pause(); }).catch(e=>{});
+                } else {
+                    vid2.play().catch(e=>{});
+                    vid1.play().then(() => { vid1.pause(); }).catch(e=>{});
+                }
+            } else {
+                vid1.pause(); vid2.pause();
+            }
+        };
+
+        // CHỐNG CHẾT NỀN KHI QUAY LẠI TỪ TAB KHÁC THEO CƠ CHẾ NATIVE SAFARI HOẶC PWA
+        const resumeLibraryBg = () => {
+            const lib = document.getElementById('ebookLibrary');
+            if (lib && !lib.classList.contains('translate-y-full')) {
+                const vid1 = document.getElementById('libraryBgVideo1');
+                const vid2 = document.getElementById('libraryBgVideo2');
+                
+                // Safari iOS CSS Reflow Hack to force layout repaint and unlock video freezing
+                if(vid1) { vid1.style.display = 'none'; void vid1.offsetHeight; vid1.style.display = 'block'; }
+                if(vid2) { vid2.style.display = 'none'; void vid2.offsetHeight; vid2.style.display = 'block'; }
+                
+                setTimeout(() => toggleLibraryVideos(true), 50);
+                
+                // Kích thêm 1 lần nữa sau 1s để chắc chắn ăn
+                setTimeout(() => toggleLibraryVideos(true), 1000);
+            }
+        };
+        document.addEventListener("visibilitychange", () => { if (document.visibilityState === 'visible') resumeLibraryBg(); });
+        window.addEventListener("focus", resumeLibraryBg);
+        window.addEventListener("pageshow", resumeLibraryBg);
+
+        // Re-implement openEbookLibrary properly
+        function openEbookLibrary() {
+            window.activeEbookData = EBOOK_CHAPTERS;
+            const libTitle = document.getElementById('libraryTitle');
+            if(libTitle) libTitle.innerText = 'BÀI GIẢNG - GIÁO TRÌNH SINH LÝ';
+            
+            try { gtag('event', 'open_library', { 'app_name': 'Sinh Lý' }); } catch(e) {}
+            const modal = document.getElementById('ebookLibrary');
+            modal.classList.remove('pointer-events-none');
+            
+            // Force reflow and slide up smoothly
+            void modal.offsetWidth; 
+            modal.classList.remove('translate-y-full');
+            
+            toggleLibraryVideos(true);
+            
+            setTimeout(() => {
+                renderEbooks();
+            }, 350); 
+        }
+
+        function openNetterLibrary() {
+            window.activeEbookData = GUYTON_CHAPTERS;
+            const libTitle = document.getElementById('libraryTitle');
+            if(libTitle) libTitle.innerText = 'GUYTON 15TH';
+            
+            try { gtag('event', 'open_library', { 'app_name': 'Guyton 15th' }); } catch(e) {}
+            const modal = document.getElementById('ebookLibrary');
+            modal.classList.remove('pointer-events-none');
+            
+            // Force reflow and slide up smoothly
+            void modal.offsetWidth; 
+            modal.classList.remove('translate-y-full');
+            
+            toggleLibraryVideos(true);
+            
+            setTimeout(() => {
+                renderEbooks();
+            }, 350); 
+        }
+
+        function closeEbookLibrary() {
+            const modal = document.getElementById('ebookLibrary');
+            modal.classList.add('translate-y-full');
+            document.body.style.overflow = 'auto';
+            setTimeout(() => {
+                modal.classList.add('pointer-events-none');
+                toggleLibraryVideos(false);
+            }, 300);
+        }
+        
+        // Re-implement PDF functions
+        function openPdfViewer(title, url) {
+            try { gtag('event', 'view_item', { 'item_name': title, 'app_name': 'Sinh Lý' }); } catch(e) {}
+            const viewer = document.getElementById('pdfViewer');
+            const iframe = document.getElementById('pdfIframe');
+            const loader = document.getElementById('pdfLoader');
+            
+            document.getElementById('pdfTitle').innerText = title;
+            document.getElementById('pdfExternalLink').href = url;
+            currentActivePdf = url;
+            
+            // Xóa iframe cũ và hiện Loader
+            iframe.src = 'about:blank';
+            iframe.style.opacity = '0';
+            if(loader) loader.style.opacity = '1';
+            
+            // Tắt hoàn toàn render của các layer nền siêu nặng để chống Crash văng app trên iPhone
+            document.getElementById('ebookLibrary').style.display = 'none';
+            const btnFloat = document.getElementById('btnLibraryFloat');
+            if(btnFloat) btnFloat.style.display = 'none';
+            const vantaBg = document.getElementById('vanta-bg');
+            if(vantaBg) vantaBg.style.display = 'none';
+            document.body.style.backgroundColor = '#0f172a'; // dark background 
+            
+            // Mở Modal (Cho animation chạy trước)
+            viewer.classList.remove('hidden');
+            // Trigger reflow
+            void viewer.offsetWidth;
+            viewer.classList.replace('translate-y-full', 'translate-y-0');
+            viewer.classList.replace('opacity-0', 'opacity-100');
+            document.body.style.overflow = 'hidden';
+            
+            // Đợi 300ms sau khi animation xong mới gán src iframe để tránh lấn chiếm GPU
+            setTimeout(() => {
+                const finalUrl = url;
+                iframe.src = finalUrl;
+                
+                // Hide loader once iframe loads
+                iframe.onload = function() {
+                    if(loader) loader.style.opacity = '0';
+                    iframe.style.opacity = '1';
+                    iframe.style.transition = 'opacity 0.5s ease';
+                };
+            }, 300);
+        }
+
+        function closePdfViewer() {
+            const viewer = document.getElementById('pdfViewer');
+            viewer.classList.replace('translate-y-0', 'translate-y-full');
+            viewer.classList.replace('opacity-100', 'opacity-0');
+            
+            // Bật lại các layer nền
+            document.getElementById('ebookLibrary').style.display = 'flex';
+            const btnFloat = document.getElementById('btnLibraryFloat');
+            if(btnFloat) btnFloat.style.display = 'flex';
+            const vantaBg = document.getElementById('vanta-bg');
+            if(vantaBg) vantaBg.style.display = 'block';
+            document.body.style.backgroundColor = '';
+
+            document.body.style.overflow = 'auto';
+            // Prevent RAM leakage by clearing iframe
+            document.getElementById('pdfIframe').src = "about:blank";
+            setTimeout(() => {
+                viewer.classList.add('hidden');
+            }, 300);
+        }
+
+
+        const ALL_CASES = [
+            {"url": "sinhlychuyenhoachatvanangluong.html", "title": "SINH LÝ CHUYỂN HÓA CHẤT VÀ NĂNG LƯỢNG", "category": "Hệ Tiêu Hóa - Chuyển Hóa"},
+            {"url": "sinhlycacdichcothe.html", "title": "SINH LÝ CÁC DỊCH CƠ THỂ", "category": "Hệ Máu & Dịch Cơ Thể"},
+            {"url": "sinhlyco.html", "title": "SINH LÝ CƠ", "category": "Sinh Lý Tế Bào"},
+            {"url": "sinhlyhohap.html", "title": "SINH LÝ HÔ HẤP", "category": "Hệ Tuần Hoàn - Hô Hấp"},
+            {"url": "sinhlyhechucnangcaocaphethankinh.html", "title": "SINH LÝ HỆ CHỨC NĂNG CAO CẤP HỆ THẦN KINH", "category": "Hệ Thần Kinh"},
+            {"url": "sinhlyhethankinhcamgiac.html", "title": "SINH LÝ HỆ THẦN KINH CẢM GIÁC", "category": "Hệ Thần Kinh"},
+            {"url": "sinhlyhethankinhvanong.html", "title": "SINH LÝ HỆ THẦN KINH VẬN ĐỘNG", "category": "Hệ Thần Kinh"},
+            {"url": "sinhlymau.html", "title": "SINH LÝ MÁU", "category": "Hệ Máu & Dịch Cơ Thể"},
+            {"url": "sinhlynoron.html", "title": "SINH LÝ NƠRON", "category": "Hệ Thần Kinh"},
+            {"url": "sinhlynoitiet.html", "title": "SINH LÝ NỘI TIẾT", "category": "Hệ Nội Tiết - Sinh Dục"},
+            {"url": "sinhlysinhducsinhsan.html", "title": "SINH LÝ SINH DỤC & SINH SẢN", "category": "Hệ Nội Tiết - Sinh Dục"},
+            {"url": "sinhlythantietnieu.html", "title": "SINH LÝ THẬN TIẾT NIỆU", "category": "Hệ Thận - Tiết Niệu"},
+            {"url": "sinhlytieuhoa.html", "title": "SINH LÝ TIÊU HÓA", "category": "Hệ Tiêu Hóa - Chuyển Hóa"},
+            {"url": "sinhlytuanhoan.html", "title": "SINH LÝ TUẦN HOÀN", "category": "Hệ Tuần Hoàn - Hô Hấp"},
+            {"url": "sinhlytebaovatraooichatquamang.html", "title": "SINH LÝ TẾ BÀO VÀ TRAO ĐỔI CHẤT QUA MÀNG", "category": "Sinh Lý Tế Bào"},
+            {"url": "sinhlyieunhiet.html", "title": "SINH LÝ ĐIỀU NHIỆT", "category": "Hệ Tiêu Hóa - Chuyển Hóa"},
+            {"url": "sinhlyienthemangvaienthehoatong.html", "title": "SINH LÝ ĐIỆN THẾ MÀNG VÀ ĐIỆN THẾ HOẠT ĐỘNG", "category": "Sinh Lý Tế Bào"}
+        ];
+        const CATEGORIES = ["Tất cả"];
+        
+        const GUYTON_CHAPTERS = [
+            {
+                "chapterName": "GUYTON 15TH",
+                "gradient": "ebook-gradient-2",
+                "books": [
+                    { "title": "0. MỤC LỤC", "url": "https://drive.google.com/file/d/1RnIPg4N3SJiG0bhllGl5pRmp10lPkOir/preview" },
+                    { "title": "I. TẾ BÀO VÀ SINH LÝ HỌC ĐẠI CƯƠNG", "url": "https://drive.google.com/file/d/1dAStzwxXl2LhRhPMktC5Ju4_2_ok4Mx_/preview" },
+                    { "title": "II. SINH LÝ MÀNG TẾ BÀO, THẦN KINH, CƠ", "url": "https://drive.google.com/file/d/1LbpEQiyDLJP7QdT5ASUL2CEKnroVh8xz/preview" },
+                    { "title": "III. TIM", "url": "https://drive.google.com/file/d/1cykWsf4dUcuGUO60nBpJSk8GLUDCi4bE/preview" },
+                    { "title": "IV. HỆ TUẦN HOÀN", "url": "https://drive.google.com/file/d/1Nmp02Joo6RSnAsztyHnbNXs-mXGq_QYj/preview" },
+                    { "title": "V. DỊCH CƠ THỂ VÀ THẬN", "url": "https://drive.google.com/file/d/1tpIKCH0Ojuqzzr8lyPc7r_o3nOHzcoul/preview" },
+                    { "title": "VI. TẾ BÀO MÁU, MIỄN DỊCH, ĐÔNG MÁU", "url": "https://drive.google.com/file/d/1sdbUPSOZ15Ytq5lUucM12w0LhH4vaelP/preview" },
+                    { "title": "VII. HÔ HẤP", "url": "https://drive.google.com/file/d/1Wd4J3PzlocRsf9npVEtd5_ZL6hhCt80-/preview" },
+                    { "title": "VIII. SINH LÝ HỌC HÀNG KHÔNG, KHÔNG GIAN VÀ LẶN BIỂN SÂU", "url": "https://drive.google.com/file/d/1S0nVvF6h6Dr2XSne0C3Fq-tJ2jDmXjzC/preview" },
+                    { "title": "IX. HỆ THẦN KINH - A. CÁC NGUYÊN LÝ CHUNG VÀ SINH LÝ HỌC CẢM GIÁC", "url": "https://drive.google.com/file/d/1wk-3hHFX3tNHEWEW0A6D0enRH1jknmGT/preview" },
+                    { "title": "X. HỆ THẦN KINH - B. CÁC GIÁC QUAN ĐẶC BIỆT", "url": "https://drive.google.com/file/d/1-0IdZareK9SYsBMeROsOB-9R77hy7T8j/preview" },
+                    { "title": "XI. HỆ THẦN KINH - C. SINH LÝ THẦN KINH VẬN ĐỘNG VÀ TÍCH HỢP", "url": "https://drive.google.com/file/d/1k4rdH2qPd5GkvWeIoG6w8C-Y1w1sFmPz/preview" },
+                    { "title": "XII. SINH LÝ HỌC TIÊU HÓA", "url": "https://drive.google.com/file/d/1QoANa6oRHAGJFOw7MWeERzbGTe5k_2yn/preview" },
+                    { "title": "XIII. CHUYỂN HÓA VÀ ĐIỀU HÒA THÂN NHIỆT", "url": "https://drive.google.com/file/d/1U0u_mZSwUn5Q_6-p7ur5-oHWVQeDCfHo/preview" },
+                    { "title": "XIV. NỘI TIẾT HỌC VÀ SINH SẢN", "url": "https://drive.google.com/file/d/12MfQ4mDZIk-BNt6MwCwIjazKN1QE_VOh/preview" },
+                    { "title": "XV. SINH LÝ HỌC THỂ THAO", "url": "https://drive.google.com/file/d/1K9DMVPuMRFs-MENERSQ_CGKOnsFadLIk/preview" }
+                ]
+            }
+        ];
+        
+        // EBOOK DATABASE - ORGANIZED BY CHAPTERS (APPLE BOOKS STYLE)
+        const EBOOK_CHAPTERS = [
+    {
+        "chapterName": "SINH LÝ TẾ BÀO",
+        "gradient": "ebook-gradient-1",
+        "books": [
+            { "title": "ĐẠI CƯƠNG VỀ CƠ THỂ SỐNG VÀ HẰNG TÍNH NỘI MÔI", "url": "https://drive.google.com/file/d/1ZtNRFPAW6fX37rBOwnmuBebe3TtExmUL/preview" },
+            { "title": "SINH LÝ TẾ BÀO – TRAO ĐỔI CHẤT QUA MÀNG TẾ BÀO", "url": "https://drive.google.com/file/d/1fYhXIpy78BGAQ0GkyKI6_5ht6GxgvgZT/preview" },
+            { "title": "SINH LÝ ĐIỆN THẾ MÀNG – ĐIỆN THẾ HOẠT ĐỘNG", "url": "https://drive.google.com/file/d/1QTCB0LGOa7kP-LCWvPWqsl-y_GzJvwkv/preview" },
+            { "title": "SINH LÝ CƠ", "url": "https://drive.google.com/file/d/1rIBDm1vrydyPwCqsJ6ZdSSB18PsdEWs9/preview" }
+        ]
+    },
+    {
+        "chapterName": "HỆ TIÊU HÓA - CHUYỂN HÓA",
+        "gradient": "ebook-gradient-5",
+        "books": [
+            { "title": "SINH LÝ CHUYỂN HÓA CHẤT VÀ NĂNG LƯỢNG", "url": "https://drive.google.com/file/d/1RczJNQJrTzF-r6eAIOh6hK3T5yh2wQdY/preview" },
+            { "title": "SINH LÝ ĐIỀU NHIỆT", "url": "https://drive.google.com/file/d/1JaFLHYnnsVE6ovP_ZrWRZZ1aWPKirLC8/preview" },
+            { "title": "SINH LÝ BỘ MÁY TIÊU HÓA", "url": "https://drive.google.com/file/d/16uf7zaeAAUQMw7QUbjzdiqXF9eBVotEZ/preview" }
+        ]
+    },
+    {
+        "chapterName": "HỆ MÁU & DỊCH CƠ THỂ",
+        "gradient": "ebook-gradient-4",
+        "books": [
+            { "title": "SINH LÝ MÁU", "url": "https://drive.google.com/file/d/15OuWFnEyfO0U4Ppcl-_g0tlWa2d4lmfG/preview" },
+            { "title": "SINH LÝ CÁC DỊCH CƠ THỂ", "url": "https://drive.google.com/file/d/1sTHNtyaUEO4aAfrfuAUllf4CoE4sGOIH/preview" }
+        ]
+    },
+    {
+        "chapterName": "HỆ TUẦN HOÀN - HÔ HẤP",
+        "gradient": "ebook-gradient-3",
+        "books": [
+            { "title": "SINH LÝ TUẦN HOÀN", "url": "https://drive.google.com/file/d/1yUhHtsGV2dZUJYNCV9hqC-QNxMMbnTKT/preview" },
+            { "title": "SINH LÝ HÔ HẤP", "url": "https://drive.google.com/file/d/1-A3UfaAGAoUCu9Ka3GytqGNJnQHdP-wa/preview" }
+        ]
+    },
+    {
+        "chapterName": "HỆ THẬN - TIẾT NIỆU",
+        "gradient": "ebook-gradient-1",
+        "books": [
+            { "title": "SINH LÝ BÀI TIẾT NƯỚC TIỂU", "url": "https://drive.google.com/file/d/1KpB_US0FPIdxDPHig4hRZUWCtNmcbIOp/preview" }
+        ]
+    },
+    {
+        "chapterName": "HỆ NỘI TIẾT - SINH DỤC",
+        "gradient": "ebook-gradient-2",
+        "books": [
+            { "title": "SINH LÝ NỘI TIẾT", "url": "https://drive.google.com/file/d/19Mg1c9HXmgwmi9mSnboWADptBKxXFgWd/preview" },
+            { "title": "SINH LÝ SINH DỤC VÀ SINH SẢN", "url": "https://drive.google.com/file/d/1z2JOdvbp8z9UmVFaPHhuWd9htCAkI_o9/preview" }
+        ]
+    },
+    {
+        "chapterName": "HỆ THẦN KINH",
+        "gradient": "ebook-gradient-4",
+        "books": [
+            { "title": "SINH LÝ NƠ RON", "url": "https://drive.google.com/file/d/1k-VvCrNH2iD9W8BkVX5EyK7cdr-Bt9pu/preview" },
+            { "title": "SINH LÝ HỆ THẦN KINH CẢM GIÁC", "url": "https://drive.google.com/file/d/1cbEI3w1zAix2t_2lC0i8QKrUV-u_qUGB/preview" },
+            { "title": "SINH LÝ HỆ THẦN KINH VẬN ĐỘNG", "url": "https://drive.google.com/file/d/1QrrfW5lPFYhdPmAcc6kUNY4KiX4lFSpg/preview" },
+            { "title": "SINH LÝ HỆ THẬN KINH TỰ CHỦ", "url": "https://drive.google.com/file/d/1ur02Ev9P1Ig1gvrYsaa3CPFvlOIm9qoR/preview" },
+            { "title": "MỘT SỐ CHỨC NĂNG CAO CẤP CỦA HỆ THẦN KINH", "url": "https://drive.google.com/file/d/1YD2rGFXG-gorRcHX7YiojtbCIboJyQI9/preview" }
+        ]
+    }
+];
+
+        const catIcons = {
+            "Tất cả": "fa-layer-group text-slate-500",
+            "Sinh Lý Tế Bào": "fa-microscope text-fuchsia-500",
+            "Hệ Thần Kinh": "fa-brain text-purple-400",
+            "Hệ Máu & Dịch Cơ Thể": "fa-droplet text-red-500",
+            "Hệ Tuần Hoàn - Hô Hấp": "fa-heartbeat text-cyan-500",
+            "Hệ Tiêu Hóa - Chuyển Hóa": "fa-apple-whole text-amber-500",
+            "Hệ Thận - Tiết Niệu": "fa-kidneys text-indigo-500",
+            "Hệ Nội Tiết - Sinh Dục": "fa-venus-mars text-pink-500",
+            "Khác": "fa-book text-slate-400"
+        };
+        
+        let currentFilter = "Tất cả";
+        let showOnlyBookmarks = false;
+        
+        const caseListEl = document.getElementById('caseList');
+        const categoryTabsEl = document.getElementById('categoryTabs');
+        const searchInput = document.getElementById('searchInput');
+        const bookmarkBtn = document.getElementById('showBookmarks');
+        
+        function getBookmarks() { return JSON.parse(localStorage.getItem('pwa_bookmarks') || '[]'); }
+        function getCompleted() { return JSON.parse(localStorage.getItem('pwa_completed') || '[]'); }
+        
+        function updateStats() {
+            const b = getBookmarks();
+            const c = getCompleted();
+            const bCnt = document.getElementById('bookmarkCount');
+            bCnt.innerText = b.length;
+            if(b.length > 0) bCnt.classList.remove('hidden'); else bCnt.classList.add('hidden');
+            
+            document.getElementById('completedStat').innerText = c.length;
+            document.getElementById('progressBar').style.width = (c.length / ALL_CASES.length * 100) + '%';
+        }
+
+        function renderCategories() {
+            categoryTabsEl.innerHTML = CATEGORIES.map(cat => {
+                const isActive = currentFilter === cat && !showOnlyBookmarks;
+                const baseClass = "group px-5 py-2.5 rounded-full text-[11px] font-bold tracking-widest uppercase transition-all duration-75 ease-out border flex items-center gap-2 shrink-0 active:scale-95 ";
+                const activeClass = "bg-white/25 text-white border-white/50 x-backdrop-blur-md shadow-[0_0_20px_rgba(255,255,255,0.2)] scale-[1.02] -translate-y-0.5";
+                const inactiveClass = "bg-white/5 text-slate-300 border-white/10 x-backdrop-blur-sm hover:bg-white/15 hover:border-white/30 hover:text-white hover:-translate-y-0.5 shadow-lg opacity-80 hover:opacity-100";
+                
+                let iconClass = catIcons[cat] || "fa-book-medical";
+                if(isActive) {
+                    iconClass = iconClass.replace(/text-\w+-\d+/, 'text-white drop-shadow-md');
+                } else {
+                    iconClass += " transition-colors duration-75 ease-out group-hover:!text-white";
+                }
+                
+                return `<button onclick="setCategory('${cat}')" class="${baseClass} ${isActive ? activeClass : inactiveClass}"><i class="fas ${iconClass} text-sm"></i> ${cat}</button>`;
+            }).join('');
+        }
+        
+        window.setCategory = function(cat) {
+            currentFilter = cat; showOnlyBookmarks = false;
+            bookmarkBtn.classList.remove('text-red-500', 'bg-red-50', 'dark:bg-red-900/40');
+            bookmarkBtn.classList.add('text-slate-400');
+            
+            // Refreeze animations
+            const cards = document.querySelectorAll('.card-anim');
+            cards.forEach(c => c.style.animation = 'none');
+            
+            document.getElementById('listTitle').innerText = (cat === "Tất cả") ? "Tất cả bài học" : cat;
+            renderCategories(); renderCases();
+        };
+        
+        bookmarkBtn.addEventListener('click', () => {
+            showOnlyBookmarks = !showOnlyBookmarks;
+            if (showOnlyBookmarks) {
+                bookmarkBtn.classList.add('text-red-500', 'bg-red-50', 'dark:bg-red-900/40');
+                bookmarkBtn.classList.remove('text-slate-400');
+                document.getElementById('listTitle').innerText = "Tủ sách lưu trữ (Heart)";
+            } else {
+                bookmarkBtn.classList.remove('text-red-500', 'bg-red-50', 'dark:bg-red-900/40');
+                bookmarkBtn.classList.add('text-slate-400');
+                document.getElementById('listTitle').innerText = (currentFilter === "Tất cả") ? "Tất cả bài học" : currentFilter;
+            }
+            renderCategories(); renderCases();
+        });
+
+        function renderCases() {
+            const term = searchInput.value.toLowerCase();
+            const bookmarks = getBookmarks();
+            const completed = getCompleted();
+            let visibleCount = 0; let html = "";
+            
+            ALL_CASES.forEach((caseItem, index) => {
+                if (showOnlyBookmarks && !bookmarks.includes(caseItem.url)) return;
+                if (!showOnlyBookmarks && currentFilter !== "Tất cả" && caseItem.category !== currentFilter) return;
+                if (term && !caseItem.title.toLowerCase().includes(term)) return;
+                
+                visibleCount++;
+                const isCompleted = completed.includes(caseItem.url);
+                const isBookmarked = bookmarks.includes(caseItem.url);
+                const animDelay = (visibleCount * 0.05) + 's';
+                
+                
+                // BENTO BOX LOGIC
+                let bentoClass = "col-span-1 flex-col items-start";
+                let textClamp = "line-clamp-3";
+                let iconSize = "w-12 h-12";
+                let titleSize = "text-sm sm:text-base";
+                
+                // Các bài học có index đặc biệt sẽ chiếm 2 cột để tạo hiệu ứng Bento
+                if (index === 0 || index === 3 || index === 8 || index === 13) {
+                    bentoClass = "col-span-2 flex-row items-center";
+                    textClamp = "line-clamp-2";
+                    iconSize = "w-14 h-14";
+                    titleSize = "text-base sm:text-lg";
+                }
+
+                html += `
+                <a href="${caseItem.url}" onclick="try { gtag('event', 'select_content', { 'content_type': 'anatomy_test', 'item_name': '${caseItem.title.replace(/'/g, "\\'")}', 'app_name': 'Sinh Lý' }); } catch(e){}" 
+                   class="perf-card card-anim block group relative bg-white dark:bg-slate-900 rounded-[24px] p-4 sm:p-5 shadow-sm transition-all duration-300 border border-slate-200/50 dark:border-slate-800 overflow-hidden active:scale-[0.97] hover:shadow-md hover:-translate-y-1 ${bentoClass.includes('col-span-2') ? 'col-span-2' : 'col-span-1'}" style="animation-delay: ${animDelay}">
+                    
+                    <!-- Shine Effect -->
+                    <div class="absolute inset-0 translate-x-[-150%] skew-x-[-20deg] group-hover:animate-[shine_1s_ease-in-out] bg-gradient-to-r from-transparent via-white/40 dark:via-white/10 to-transparent z-20 pointer-events-none"></div>
+
+                    ${isCompleted ? '<div class="absolute top-0 right-0 w-12 h-12 bg-gradient-to-bl from-emerald-500/20 to-transparent flex items-start justify-end rounded-tr-[24px]"><i class="fas fa-check text-emerald-500 p-2 text-sm sm:text-base"></i></div>' : ''}
+                    
+                    <div class="relative flex ${bentoClass.includes('flex-row') ? 'flex-row' : 'flex-col'} gap-3 sm:gap-4 z-10 h-full">
+                        <div class="${iconSize} flex-shrink-0 rounded-[16px] sm:rounded-[18px] ${isCompleted ? 'bg-gradient-to-br from-emerald-100 to-teal-50 dark:from-emerald-900/60 dark:to-teal-900/40 border border-emerald-200 dark:border-emerald-800' : 'bg-gradient-to-br from-cyan-50 to-blue-50 dark:from-cyan-900/40 dark:to-blue-900/20 border border-blue-100 dark:border-blue-800/50'} flex items-center justify-center group-hover:scale-105 group-hover:rotate-6 transition-transform duration-300 shadow-inner">
+                            <i class="fas ${isCompleted ? 'fa-shield-check text-emerald-500 text-xl' : 'fa-laptop-medical text-cyan-500 text-lg'}"></i>
+                        </div>
+                        <div class="flex-1 flex flex-col justify-center min-w-0">
+                            <span class="text-[8px] sm:text-[9px] font-black px-2 py-0.5 w-max rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-1.5 sm:mb-2">${caseItem.category}</span>
+                            <h3 class="font-heading font-bold text-slate-800 dark:text-white ${textClamp} leading-tight sm:leading-snug group-hover:text-cyan-500 dark:group-hover:text-cyan-400 transition-colors ${titleSize}">${caseItem.title}</h3>
+                            ${isBookmarked ? `<div class="mt-1.5 sm:mt-2 text-cyan-500 text-[10px] sm:text-xs flex items-center gap-1"><i class="fas fa-heart"></i> <span class="font-bold">Đã gắn Dấu Trang</span></div>` : ''}
+                        </div>
+                    </div>
+                    
+                    <div class="absolute inset-0 border-2 border-transparent group-hover:border-cyan-500/20 dark:group-hover:border-cyan-500/10 rounded-[24px] pointer-events-none transition-colors duration-300"></div>
+                </a>
+                `;
+            });
+            
+            caseListEl.innerHTML = html;
+            document.getElementById('noResults').classList.toggle('hidden', visibleCount > 0);
+        }
+
+        searchInput.addEventListener('input', renderCases);
+        
+        const themeToggle = document.getElementById('themeToggle');
+        const htmlContext = document.documentElement;
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) { htmlContext.classList.add('dark'); }
+        themeToggle.addEventListener('click', () => { 
+            // KHẮC PHỤC KHỰNG IPAD: Tắt sạch CSS transition trước khi đổi theme
+            const css = document.createElement('style'); 
+            css.innerText = '* { transition: none !important; }';
+            document.head.appendChild(css);
+
+            htmlContext.classList.toggle('dark'); 
+            localStorage.setItem('theme', htmlContext.classList.contains('dark') ? 'dark' : 'light'); 
+            
+            // Chờ trình duyệt Paint xong giao diện không có Animation rồi mới trả lại
+            requestAnimationFrame(() => {
+                setTimeout(() => document.head.removeChild(css), 50);
+            });
+        });
+
+        renderCategories(); renderCases(); updateStats();
+        
+        window.addEventListener('focus', () => { updateStats(); renderCases(); silentVerify(); });
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').then(r => console.log('SW V8 ready')).catch(e => console.error(e)));
+        }
+    
+        // NETWORK STATUS LISTENER
+        function updateNetworkStatus() {
+            const statusText = document.getElementById('networkText');
+            const statusDot = document.getElementById('networkDot');
+            const statusContainer = document.getElementById('networkStatus');
+            
+            if (!statusText) return;
+            
+            if (navigator.onLine) {
+                statusText.innerText = 'ONLINE';
+                statusDot.className = 'w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse transition-colors';
+                statusContainer.className = 'text-[9px] uppercase font-bold tracking-widest text-emerald-500 flex items-center gap-1.5 transition-colors';
+            } else {
+                statusText.innerText = 'OFFLINE';
+                statusDot.className = 'w-1.5 h-1.5 rounded-full bg-red-500 transition-colors';
+                statusContainer.className = 'text-[9px] uppercase font-bold tracking-widest text-red-500 flex items-center gap-1.5 transition-colors';
+            }
+        }
+        
+        window.addEventListener('online', updateNetworkStatus);
+        window.addEventListener('offline', updateNetworkStatus);
+        
+        // Call it once on load
+        document.addEventListener('DOMContentLoaded', updateNetworkStatus);
+
+        /* -------------------------------------
+           EBOOK LIBRARY LOGIC (APPLE BOOKS)
+        ----------------------------------------*/
+        const ebookLibraryModal = document.getElementById('ebookLibrary');
+        const pdfViewerModal = document.getElementById('pdfViewer');
+        const ebookListEl = document.getElementById('ebookList');
+        const ebookSearchInput = document.getElementById('ebookSearchInput');
+
+        const catGradients = {
+            "Tim Mạch": "ebook-gradient-4",
+            "Hô Hấp": "ebook-gradient-1",
+            "Tiêu Hóa": "ebook-gradient-5",
+            "Nội Tiết": "ebook-gradient-2",
+            "Thận - Tiết Niệu": "ebook-gradient-1",
+            "Lão Khoa": "ebook-gradient-3",
+            "Cơ Xương Khớp": "ebook-gradient-5",
+            "Huyết Học": "ebook-gradient-4",
+            "Thần Kinh & Khác": "ebook-gradient-2",
+            "Hồi Sức Cấp Cứu": "ebook-gradient-4",
+            "TDefault": "ebook-gradient-1"
+        };
+        
+        // CSS SVG Generative Medical Patterns
+        const catPatterns = {
+            "Tim Mạch": "background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0); background-size: 10px 10px;", 
+            "Hô Hấp": "background-image: repeating-linear-gradient(45deg, white 25%, transparent 25%, transparent 75%, white 75%, white), repeating-linear-gradient(45deg, white 25%, transparent 25%, transparent 75%, white 75%, white); background-position: 0 0, 10px 10px; background-size: 20px 20px;", 
+            "Hồi Sức Cấp Cứu": "background-image: repeating-radial-gradient(circle at 0 0, transparent 0, white 4px, transparent 5px, transparent 10px); background-size: 20px 20px;",
+            "Thận - Tiết Niệu": "background-image: repeating-linear-gradient(-45deg, transparent, transparent 4px, white 4px, white 5px);", 
+            "Tiêu Hóa": "background-image: repeating-linear-gradient(45deg, transparent, transparent 4px, white 6px, white 8px); background-size: 15px 15px;",
+            "Cơ Xương Khớp": "background: linear-gradient(135deg, white 25%, transparent 25%) -10px 0, linear-gradient(225deg, white 25%, transparent 25%) -10px 0, linear-gradient(315deg, white 25%, transparent 25%), linear-gradient(45deg, white 25%, transparent 25%); background-size: 20px 20px;", 
+            "Lão Khoa": "background-image: radial-gradient(circle, white 2px, transparent 2px); background-size: 16px 16px;",
+            "Nội Tiết": "background-image: linear-gradient(0deg, transparent 9px, white 10px), linear-gradient(90deg, transparent 9px, white 10px); background-size: 10px 10px;",
+            "Huyết Học": "background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0); background-size: 14px 14px;",
+            "TDefault": "background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0); background-size: 14px 14px;"
+        };
+
+        let isLibraryVideoLoaded = false;
+        
+        // --- SEAMLESS BACKGROUND VIDEO PLAYLIST LOGIC (Double Buffer) ---
+        const bgVideoPlaylist = [
+            "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260331_045634_e1c98c76-1265-4f5c-882a-4276f2080894.mp4",
+            "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260331_151551_992053d1-3d3e-4b8c-abac-45f22158f411.mp4",
+            "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260331_053923_22c0a6a5-313c-474c-85ff-3b50d25e944a.mp4",
+            "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260331_054411_511c1b7a-fb2f-42ef-bf6c-32c0b1a06e79.mp4",
+            "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260331_055427_ac7035b5-9f3b-4289-86fc-941b2432317d.mp4",
+            "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260331_055729_72d66327-b59e-4ae9-bb70-de6ccb5ecdb0.mp4"
+        ];
+        
+        let currentVideoIndex = 0;
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            const vid1 = document.getElementById('libraryBgVideo1');
+            const vid2 = document.getElementById('libraryBgVideo2');
+            if(!vid1 || !vid2) return;
+            
+            vid1.onended = null; vid2.onended = null;
+            vid1.src = bgVideoPlaylist[0];
+            
+            function scheduleCrossfade(activeVid, hiddenVid) {
+                activeVid.removeAttribute("loop"); 
+                
+                let nextIndex = (currentVideoIndex + 1) % bgVideoPlaylist.length;
+                hiddenVid.src = bgVideoPlaylist[nextIndex];
+                hiddenVid.load(); 
+                
+                activeVid.onended = () => {
+                    hiddenVid.autoplay = true;
+                    const playPromise = hiddenVid.play();
+                    
+                    if (playPromise !== undefined) {
+                        playPromise.then(() => {
+                            hiddenVid.classList.remove('opacity-0');
+                            hiddenVid.classList.add('opacity-100');
+                            
+                            activeVid.classList.remove('opacity-100');
+                            activeVid.classList.add('opacity-0');
+                            
+                            currentVideoIndex = nextIndex;
+                            setTimeout(() => { scheduleCrossfade(hiddenVid, activeVid); }, 1000);
+                            
+                        }).catch(e => {
+                            // Safe Fallback Loop if Mobile blocks Play
+                            activeVid.setAttribute("loop", "true");
+                            activeVid.play();
+                        });
+                    }
+                };
+            }
+            
+            scheduleCrossfade(vid1, vid2);
+        });
+
+
+
+
+        /* -------------------------------------
+           PREMIUM DRAG-TO-SCROLL (DESKTOP UX)
+        ----------------------------------------*/
+        let _isDown = false;
+        let _startX;
+        let _scrollLeft;
+        let _dragTarget = null;
+        let _hasDragged = false;
+
+        document.addEventListener('mousedown', (e) => {
+            const container = e.target.closest('.overflow-x-auto');
+            if(!container) return;
+            _isDown = true;
+            _dragTarget = container;
+            _hasDragged = false;
+            _startX = e.pageX - _dragTarget.offsetLeft;
+            _scrollLeft = _dragTarget.scrollLeft;
+            _dragTarget.style.scrollBehavior = 'auto'; // allow instant 1:1 dragging
+            _dragTarget.style.scrollSnapType = 'none'; // loosen up for smooth dragging
+            _dragTarget.style.cursor = 'grabbing';
+        });
+
+        document.addEventListener('mouseleave', () => { if(_isDown) _resetDrag(); });
+        document.addEventListener('mouseup', () => { if(_isDown) _resetDrag(); });
+
+        document.addEventListener('mousemove', (e) => {
+            if(!_isDown || !_dragTarget) return;
+            const x = e.pageX - _dragTarget.offsetLeft;
+            const walk = (x - _startX); 
+            if(Math.abs(walk) > 5) {
+                _hasDragged = true; // movement threshold reached
+            }
+            if(_hasDragged) {
+                e.preventDefault();
+                _dragTarget.scrollLeft = _scrollLeft - walk;
+            }
+        });
+
+        function _resetDrag() {
+            _isDown = false;
+            if(_dragTarget) {
+                _dragTarget.style.scrollBehavior = '';
+                _dragTarget.style.scrollSnapType = '';
+                _dragTarget.style.cursor = '';
+                _dragTarget = null;
+            }
+            // let the click handler consume the _hasDragged flag before clearing it
+            setTimeout(() => { _hasDragged = false; }, 50); 
+        }
+
+        // Intercept and cancel clicks if they were actually drags
+        document.addEventListener('click', (e) => {
+            if(_hasDragged) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+        }, true);
+
+        /* -------------------------------------
+           3D PARALLAX HOVER TILT (GLARE EFFECT)
+        ----------------------------------------*/
+        const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+        let _tickingTilt = false;
+        
+        document.addEventListener('mousemove', (e) => {
+            // Do not run tilt on touch devices or if dragging
+            if(isTouchDevice || _isDown) return; 
+            
+            const card = e.target.closest('.folder-card-wrapper');
+            if(!card) return;
+            
+            const cover = card.querySelector('.folder-mask');
+            if(!cover) return;
+
+            if (!_tickingTilt) {
+                window.requestAnimationFrame(() => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    
+                    // Normalize coordinates from -1 to 1
+                    const xPct = (x / rect.width - 0.5) * 2;
+                    const yPct = (y / rect.height - 0.5) * 2;
+                    
+                    // Generate 3D Tilt Values
+                    const maxTilt = 18; 
+                    const tiltY = xPct * maxTilt; 
+                    const tiltX = -yPct * maxTilt; 
+                    
+                    cover.style.transform = `perspective(1000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) scale3d(1.05, 1.05, 1.05) translateY(-5px)`;
+                    cover.style.transition = 'transform 0.1s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+                    
+                    // Generate Lens Glare Effect following mouse
+                    const glare = cover.querySelector('.glare-element');
+                    if(glare) {
+                        glare.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0) 60%)`;
+                    }
+                    _tickingTilt = false;
+                });
+                _tickingTilt = true;
+            }
+        });
+
+        document.addEventListener('mouseout', (e) => {
+            const card = e.target.closest('.book-card');
+            if(!card) return;
+            
+            // Only reset if mouse genuinely left the entire card hit-area
+            if (!card.contains(e.relatedTarget)) {
+                const cover = card.querySelector('.book-cover');
+                if(cover) {
+                    cover.style.transform = ''; 
+                    cover.style.transition = 'transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+                }
+            }
+        });
+
+        // Đã xóa hàm tự khởi tạo lúc bắt đầu để tiết kiệm VRAM cho Safari (Tránh lỗi Khựng)
+    </script>
+
+    
+    <!-- 3D HERO SCRIPT INIT -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Chỉ giữ lại Vanilla Tilt cho các nút bấm kính lỏng (không dùng Vanta để tránh bị thô)
+            if(window.VanillaTilt) {
+                VanillaTilt.init(document.querySelectorAll("[data-tilt]"));
+                document.querySelectorAll("[data-tilt]").forEach(el => {
+                    el.addEventListener("tiltChange", function (event) {
+                        this.style.zIndex = "50";
+                    });
+                    el.addEventListener("mouseleave", function () {
+                        this.style.zIndex = "10";
+                    });
+                });
+            }
+        });
+    </script>
+</body>
+</html>
