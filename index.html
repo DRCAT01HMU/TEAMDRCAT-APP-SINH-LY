@@ -549,6 +549,21 @@
                                 <i class="fas fa-chevron-right text-white/50 group-hover:text-white group-hover:translate-x-1 transition-all"></i>
                             </button>
                         </div>
+                        
+                        <!-- Study Motivation Animation Video Auto Play -->
+                        <div class="w-full max-w-xl mt-4 relative z-10">
+                            <div class="block relative w-full rounded-2xl shadow-[0_10px_30px_rgba(0,0,0,0.5)] bg-black/40 group overflow-hidden border border-white/10">
+                                <!-- Glowing effect behind -->
+                                <div class="absolute -inset-0.5 bg-gradient-to-r from-rose-500 to-purple-600 rounded-2xl blur opacity-30 group-hover:opacity-80 transition duration-500 pointer-events-none"></div>
+                                
+                                <!-- 16:9 Aspect Ratio Container -->
+                                <div class="relative w-full aspect-video z-10 rounded-xl overflow-hidden bg-slate-900 transition-transform duration-300 border border-white/10 shadow-inner">
+                                    
+                                    <!-- YouTube iframe có âm thanh và thanh điều khiển -->
+                                    <iframe class="absolute inset-0 w-full h-full border-0" src="https://www.youtube.com/embed/zgtEJGgLNFM?autoplay=1&mute=0&controls=1&showinfo=0&rel=0&loop=1&playlist=zgtEJGgLNFM&modestbranding=1&playsinline=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 
@@ -715,9 +730,73 @@
         </div>
     </div>
 
+    
+    <!-- QUIZ VIEWER MODAL -->
+    <div id="quizViewer" class="fixed inset-0 z-[100] bg-black/40 hidden flex-col transition-all duration-300 translate-y-full opacity-0 select-none" style="-webkit-touch-callout: none; -webkit-tap-highlight-color: transparent;">
+        <div class="flex-none bg-transparent px-3 py-1.5 sm:py-2 flex items-center justify-between pt-safe z-20">
+            <div class="flex items-center gap-2">
+                <div class="w-6 h-6 rounded-md bg-blue-600/80 flex items-center justify-center shadow-inner border border-blue-400/30">
+                    <i class="fas fa-laptop-medical text-white text-[10px]"></i>
+                </div>
+                <h3 id="quizTitle" class="text-slate-100 font-bold text-[11px] sm:text-xs tracking-widest uppercase line-clamp-1 drop-shadow-sm">Bài Test</h3>
+            </div>
+            <div class="flex items-center gap-2">
+                <button onclick="closeQuizViewer()" class="px-3 py-1 bg-white/10 hover:bg-red-500/80 text-white rounded-md text-[10px] font-black transition-all cursor-pointer border border-white/10 hover:border-red-400/50 shadow-sm uppercase tracking-widest flex items-center gap-1.5 active:scale-95">
+                    <i class="fas fa-times"></i> Đóng Test
+                </button>
+            </div>
+        </div>
+        <div class="w-full relative mx-auto flex-1 z-10 overflow-hidden block bg-slate-50 dark:bg-slate-950">
+            <iframe id="quizIframe" src="" class="absolute inset-0 w-full h-full border-0 z-10" allowfullscreen></iframe>
+        </div>
+    </div>
+
     <script>
 
         
+        
+        window.addEventListener('message', function(event) {
+            if (event.data && event.data.action === 'closeQuiz') {
+                if (typeof closeQuizViewer === 'function') {
+                    closeQuizViewer();
+                }
+            }
+        });
+
+        function openQuizViewer(url, title) {
+            try { gtag('event', 'view_item', { 'item_name': title || 'Quiz', 'app_name': 'Sinh Lý' }); } catch(e) {}
+            const viewer = document.getElementById('quizViewer');
+            const iframe = document.getElementById('quizIframe');
+            
+            document.getElementById('quizTitle').innerText = title || "Bài Test";
+            
+            iframe.src = 'about:blank';
+            viewer.classList.remove('hidden');
+            viewer.classList.add('flex');
+            void viewer.offsetWidth;
+            viewer.classList.replace('translate-y-full', 'translate-y-0');
+            viewer.classList.replace('opacity-0', 'opacity-100');
+            
+            document.body.style.overflow = 'hidden';
+            
+            setTimeout(() => {
+                iframe.src = url;
+            }, 300);
+        }
+
+        window.closeQuizViewer = function() {
+            const viewer = document.getElementById('quizViewer');
+            viewer.classList.replace('translate-y-0', 'translate-y-full');
+            viewer.classList.replace('opacity-100', 'opacity-0');
+            
+            document.body.style.overflow = 'auto';
+            document.getElementById('quizIframe').src = "about:blank";
+            setTimeout(() => {
+                viewer.classList.remove('flex');
+                viewer.classList.add('hidden');
+            }, 300);
+        };
+
         function renderEbooks() {
             let html = "";
             let term = document.getElementById('ebookSearchInput') ? document.getElementById('ebookSearchInput').value.toLowerCase() : "";
@@ -1204,7 +1283,7 @@
                 }
 
                 html += `
-                <a href="${caseItem.url}" onclick="try { gtag('event', 'select_content', { 'content_type': 'anatomy_test', 'item_name': '${caseItem.title.replace(/'/g, "\\'")}', 'app_name': 'Sinh Lý' }); } catch(e){}" 
+                <a href="javascript:void(0)" onclick="openQuizViewer('${caseItem.url}', '${caseItem.title.replace(/'/g, "\'")}'); try { gtag('event', 'select_content', { 'content_type': 'anatomy_test', 'item_name': '${caseItem.title.replace(/'/g, "\\'")}', 'app_name': 'Sinh Lý' }); } catch(e){}" 
                    class="perf-card card-anim block group relative bg-white dark:bg-slate-900 rounded-[24px] p-4 sm:p-5 shadow-sm transition-all duration-300 border border-slate-200/50 dark:border-slate-800 overflow-hidden active:scale-[0.97] hover:shadow-md hover:-translate-y-1 ${bentoClass.includes('col-span-2') ? 'col-span-2' : 'col-span-1'}" style="animation-delay: ${animDelay}">
                     
                     <!-- Shine Effect -->
