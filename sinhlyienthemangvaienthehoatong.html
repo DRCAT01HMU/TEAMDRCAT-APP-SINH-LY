@@ -1075,7 +1075,7 @@ function App() {
                     </div>
                     {/* NỘP BÀI BUTTON ADDED */}
                     <div className="mt-2 pb-16 flex justify-center w-full animate-in fade-in slide-in-from-bottom-5 duration-700">
-                        <button onClick={() => { if(window.confirm('Bạn có chắc chắn muốn nộp bài chứ?')) { setAppState('result'); setShowMatrix(false); } }} className="w-full sm:w-2/3 md:w-1/2 bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white font-black py-4 px-8 rounded-[1.5rem] shadow-[0_10px_25px_-5px_rgba(239,68,68,0.5)] hover:shadow-[0_15px_30px_-5px_rgba(239,68,68,0.6)] transform  transition-all flex items-center justify-center gap-4 text-lg border border-red-400">
+                        <button onClick={() => { window.customConfirmDialog('Bạn có chắc chắn muốn nộp bài chứ?', () => { setAppState('result'); setShowMatrix(false); }) }} className="w-full sm:w-2/3 md:w-1/2 bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white font-black py-4 px-8 rounded-[1.5rem] shadow-[0_10px_25px_-5px_rgba(239,68,68,0.5)] hover:shadow-[0_15px_30px_-5px_rgba(239,68,68,0.6)] transform  transition-all flex items-center justify-center gap-4 text-lg border border-red-400">
                             <div className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center  shadow-inner shrink-0">
                                 <i className="fa-solid fa-paper-plane text-xl"></i>
                             </div>
@@ -1276,7 +1276,7 @@ function App() {
                 </div>
                 <div className="p-6 pb-28 border-t border-slate-200/50 dark:border-slate-700/50 bg-white/40 dark:bg-slate-800/90  z-10">
                     {appState === 'quiz' ? (
-                        <button onClick={() => { if(window.confirm('Bạn có chắc chắn muốn nộp bài chứ?')) { setAppState('result'); setShowMatrix(false); } }} className="w-full btn-gradient text-white font-black py-4 rounded-xl shadow-lg flex items-center justify-center gap-2 uppercase tracking-widest hover:shadow-blue-500/40 transition-all "><i className="fa-solid fa-paper-plane text-lg"></i> Nộp bài ngay</button>
+                        <button onClick={() => { window.customConfirmDialog('Bạn có chắc chắn muốn nộp bài chứ?', () => { setAppState('result'); setShowMatrix(false); }) }} className="w-full btn-gradient text-white font-black py-4 rounded-xl shadow-lg flex items-center justify-center gap-2 uppercase tracking-widest hover:shadow-blue-500/40 transition-all "><i className="fa-solid fa-paper-plane text-lg"></i> Nộp bài ngay</button>
                     ) : (
                         <button onClick={restartQuiz} className="w-full bg-slate-800 dark:bg-slate-700 text-white font-black py-4 rounded-xl flex items-center justify-center gap-2 hover:bg-slate-900 dark:hover:bg-slate-600 transition-colors shadow-md "><i className="fa-solid fa-rotate-right text-lg"></i> Làm lại từ đầu</button>
                     )}
@@ -1393,8 +1393,8 @@ root.render(<ErrorBoundary><App /></ErrorBoundary>);
                 const u = window.location.pathname.split('/').pop().split('?')[0].split('#')[0];
                 let b = JSON.parse(localStorage.getItem('pwa_bookmarks') || '[]');
                 let isGhim = false;
-                if(!b.includes(u)) { b.push(u); alert('Đã ghim mốc Dấu Trang!'); isGhim = true; }
-                else { b = b.filter(x => x !== u); alert('Đã hủy Dấu Trang!'); }
+                if(!b.includes(u)) { b.push(u); window.customAlert('Đã ghim mốc Dấu Trang!'); isGhim = true; }
+                else { b = b.filter(x => x !== u); window.customAlert('Đã hủy Dấu Trang!'); }
                 localStorage.setItem('pwa_bookmarks', JSON.stringify(b));
                 if (isGhim) { btn.classList.remove('hover:text-white'); btn.style.color = '#f43f5e'; btn.style.fontWeight = '900'; btn.style.filter = 'drop-shadow(0 4px 3px rgb(0 0 0 / 0.07))'; }
                 else { btn.classList.add('hover:text-white'); btn.style.color = ''; btn.style.fontWeight = ''; btn.style.filter = ''; }
@@ -1405,14 +1405,96 @@ root.render(<ErrorBoundary><App /></ErrorBoundary>);
                 const u = window.location.pathname.split('/').pop().split('?')[0].split('#')[0];
                 let c = JSON.parse(localStorage.getItem('pwa_completed') || '[]');
                 let isDone = false;
-                if(!c.includes(u)) { c.push(u); alert('Đã đánh dấu bài học này là [Đã Xong]!'); isDone = true; }
-                else { c = c.filter(x => x !== u); alert('Đã bỏ đánh dấu hoàn thành bài học!'); }
+                if(!c.includes(u)) { c.push(u); window.customAlert('Đã đánh dấu bài học này là [Đã Xong]!'); isDone = true; }
+                else { c = c.filter(x => x !== u); window.customAlert('Đã bỏ đánh dấu hoàn thành bài học!'); }
                 localStorage.setItem('pwa_completed', JSON.stringify(c));
                 if (isDone) { btn.classList.remove('hover:text-white'); btn.style.color = '#34d399'; btn.style.fontWeight = '900'; btn.style.filter = 'drop-shadow(0 4px 3px rgb(0 0 0 / 0.07))'; }
                 else { btn.classList.add('hover:text-white'); btn.style.color = ''; btn.style.fontWeight = ''; btn.style.filter = ''; }
             } catch(e) { console.error(e); }
         }
     </script>
+
+
+<script>
+window.customConfirmDialog = function(msg, onConfirm) {
+    const overlay = document.createElement('div');
+    overlay.className = 'fixed inset-0 bg-slate-900/80 z-[99999] flex items-center justify-center backdrop-blur-sm transition-opacity duration-300';
+    overlay.style.opacity = '0';
+    
+    const dialog = document.createElement('div');
+    dialog.className = 'bg-white dark:bg-slate-800 p-6 sm:p-8 rounded-[2rem] shadow-2xl max-w-sm w-[90%] mx-auto transform transition-all duration-300 border border-slate-200 dark:border-slate-700 scale-95 opacity-0';
+    
+    const iconContainer = document.createElement('div');
+    iconContainer.className = 'w-16 h-16 bg-blue-100 dark:bg-blue-900/50 rounded-full flex items-center justify-center mx-auto mb-4 text-blue-600 dark:text-blue-400 shadow-inner';
+    iconContainer.innerHTML = '<i class="fa-solid fa-circle-question text-3xl"></i>';
+    
+    const title = document.createElement('h3');
+    title.className = 'text-xl font-black text-slate-800 dark:text-white mb-2 text-center uppercase tracking-wider';
+    title.innerText = 'Xác nhận';
+    
+    const message = document.createElement('p');
+    message.className = 'text-slate-500 dark:text-slate-400 text-center mb-8 font-medium text-sm sm:text-base';
+    message.innerText = msg;
+    
+    const btnContainer = document.createElement('div');
+    btnContainer.className = 'flex gap-3 justify-center';
+    
+    const btnCancel = document.createElement('button');
+    btnCancel.className = 'flex-1 px-5 py-3 rounded-xl font-bold bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600 transition-all active:scale-95';
+    btnCancel.innerText = 'Hủy';
+    btnCancel.onclick = () => {
+        overlay.style.opacity = '0';
+        dialog.classList.remove('scale-100', 'opacity-100');
+        dialog.classList.add('scale-95', 'opacity-0');
+        setTimeout(() => { if(document.body.contains(overlay)) document.body.removeChild(overlay); }, 300);
+    };
+    
+    const btnConfirm = document.createElement('button');
+    btnConfirm.className = 'flex-1 px-5 py-3 rounded-xl font-bold bg-gradient-to-r from-blue-500 to-cyan-500 text-white hover:from-blue-600 hover:to-cyan-600 shadow-md transition-all active:scale-95 shadow-blue-500/30';
+    btnConfirm.innerText = 'Đồng ý';
+    btnConfirm.onclick = () => {
+        overlay.style.opacity = '0';
+        dialog.classList.remove('scale-100', 'opacity-100');
+        dialog.classList.add('scale-95', 'opacity-0');
+        setTimeout(() => { if(document.body.contains(overlay)) document.body.removeChild(overlay); }, 300);
+        if(onConfirm) onConfirm();
+    };
+    
+    btnContainer.appendChild(btnCancel);
+    btnContainer.appendChild(btnConfirm);
+    
+    dialog.appendChild(iconContainer);
+    dialog.appendChild(title);
+    dialog.appendChild(message);
+    dialog.appendChild(btnContainer);
+    overlay.appendChild(dialog);
+    
+    document.body.appendChild(overlay);
+    
+    requestAnimationFrame(() => {
+        overlay.style.opacity = '1';
+        dialog.classList.remove('scale-95', 'opacity-0');
+        dialog.classList.add('scale-100', 'opacity-100');
+    });
+};
+
+window.customAlert = function(msg) {
+    const toast = document.createElement('div');
+    toast.className = 'fixed bottom-20 left-1/2 -translate-x-1/2 bg-slate-800 text-white px-6 py-3 rounded-full shadow-2xl z-[999999] flex items-center gap-3 transform transition-all duration-500 translate-y-10 opacity-0 font-bold tracking-wide text-sm border border-slate-700';
+    toast.innerHTML = `<i class="fa-solid fa-bell text-rose-400"></i> ${msg}`;
+    
+    document.body.appendChild(toast);
+    
+    requestAnimationFrame(() => {
+        toast.classList.remove('translate-y-10', 'opacity-0');
+    });
+    
+    setTimeout(() => {
+        toast.classList.add('translate-y-10', 'opacity-0');
+        setTimeout(() => { if(document.body.contains(toast)) document.body.removeChild(toast); }, 500);
+    }, 3000);
+};
+</script>
 
 </body>
 </html>
