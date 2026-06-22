@@ -55,6 +55,14 @@
 
         /* Folder Style Additions */
         .pt-safe { padding-top: env(safe-area-inset-top); }
+        @media (display-mode: standalone) {
+            .pt-safe {
+                padding-top: max(30px, calc(8px + env(safe-area-inset-top))) !important;
+            }
+            .app-header {
+                padding-top: max(30px, calc(8px + env(safe-area-inset-top))) !important;
+            }
+        }
         /* Book Cover 3D Shadows */
         .book-shadow {
             box-shadow: 
@@ -733,15 +741,15 @@
     
     <!-- QUIZ VIEWER MODAL -->
     <div id="quizViewer" class="fixed inset-0 z-[100] bg-black/40 hidden flex-col transition-all duration-300 translate-y-full opacity-0 select-none" style="-webkit-touch-callout: none; -webkit-tap-highlight-color: transparent;">
-        <div class="flex-none bg-transparent px-3 py-1.5 sm:py-2 flex items-center justify-between pt-safe z-20">
+        <div class="flex-none bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-3 py-2 flex items-center justify-between pt-safe z-20 shadow-sm">
             <div class="flex items-center gap-2">
                 <div class="w-6 h-6 rounded-md bg-blue-600/80 flex items-center justify-center shadow-inner border border-blue-400/30">
                     <i class="fas fa-laptop-medical text-white text-[10px]"></i>
                 </div>
-                <h3 id="quizTitle" class="text-slate-100 font-bold text-[11px] sm:text-xs tracking-widest uppercase line-clamp-1 drop-shadow-sm">Bài Test</h3>
+                <h3 id="quizTitle" class="text-slate-800 dark:text-slate-200 font-bold text-[11px] sm:text-xs tracking-widest uppercase line-clamp-1 drop-shadow-sm">Bài Test</h3>
             </div>
             <div class="flex items-center gap-2">
-                <button onclick="closeQuizViewer()" class="px-3 py-1 bg-white/10 hover:bg-red-500/80 text-white rounded-md text-[10px] font-black transition-all cursor-pointer border border-white/10 hover:border-red-400/50 shadow-sm uppercase tracking-widest flex items-center gap-1.5 active:scale-95">
+                <button onclick="closeQuizViewer()" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-red-500 hover:text-white dark:hover:bg-red-500 dark:hover:text-white text-slate-700 dark:text-slate-300 rounded-md text-[10px] font-black transition-all cursor-pointer border border-slate-200 dark:border-slate-700 hover:border-transparent dark:hover:border-transparent shadow-sm uppercase tracking-widest flex items-center gap-1.5 active:scale-95">
                     <i class="fas fa-times"></i> Đóng Test
                 </button>
             </div>
