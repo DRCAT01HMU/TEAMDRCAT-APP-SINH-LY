@@ -1344,7 +1344,23 @@
         window.addEventListener('focus', () => { updateStats(); renderCases(); silentVerify(); });
 
         if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').then(r => console.log('SW V8 ready')).catch(e => console.error(e)));
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(registration => {
+                        console.log('SW V8 ready');
+                        if (navigator.onLine) {
+                            registration.update();
+                        }
+                    })
+                    .catch(e => console.error(e));
+            });
+            let refreshing = false;
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+                if (!refreshing) {
+                    window.location.reload();
+                    refreshing = true;
+                }
+            });
         }
     
         // NETWORK STATUS LISTENER

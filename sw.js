@@ -1,10 +1,23 @@
-const CACHE_NAME = 'tdc-sinhly-v7-auto-update-v3';
+const CACHE_NAME = 'tdc-sinhly-v7-auto-update-v4';
 const urlsToCache = ['./', './index.html', './pdf-viewer.html', './manifest.json', 'https://cdn.tailwindcss.com', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css', 'https://cdn-icons-png.flaticon.com/512/3004/3004458.png', 'https://unpkg.com/react@18/umd/react.production.min.js', 'https://unpkg.com/react-dom@18/umd/react-dom.production.min.js', 'https://unpkg.com/@babel/standalone/babel.min.js', './sinhlychuyenhoachatvanangluong.html', './sinhlycacdichcothe.html', './sinhlyco.html', './sinhlyhohap.html', './sinhlyhechucnangcaocaphethankinh.html', './sinhlyhethankinhcamgiac.html', './sinhlyhethankinhvanong.html', './sinhlymau.html', './sinhlynoron.html', './sinhlynoitiet.html', './sinhlysinhducsinhsan.html', './sinhlythantietnieu.html', './sinhlytieuhoa.html', './sinhlytuanhoan.html', './sinhlytebaovatraooichatquamang.html', './sinhlyieunhiet.html', './sinhlyienthemangvaienthehoatong.html'];
 
 self.addEventListener('install', event => {
   self.skipWaiting();
   event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache))
+    caches.open(CACHE_NAME).then(cache => {
+      return Promise.all(
+        urlsToCache.map(url => {
+          return fetch(new Request(url, { cache: 'reload' }))
+            .then(response => {
+              if (response.ok) {
+                return cache.put(url, response);
+              }
+              throw new Error(`Failed to fetch ${url}`);
+            })
+            .catch(err => console.error(err));
+        })
+      );
+    })
   );
 });
 
