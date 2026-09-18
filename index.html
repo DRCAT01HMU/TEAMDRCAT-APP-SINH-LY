@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
-    <title>CASE TEST TDC</title>
+    <title>TEST SINH LÝ</title>
     <link rel="preconnect" href="https://drive.google.com">
     <link rel="preconnect" href="https://docs.google.com">
     <link rel="manifest" href="manifest.json">
@@ -11,7 +11,7 @@
     <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3004/3004458.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="TDC Care">
+    <meta name="apple-mobile-web-app-title" content="Sinh Lý">
     <link rel="preconnect" href="https://drive.google.com">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -192,14 +192,16 @@
             const lockContainer = document.getElementById('lock-container');
             const lockScreen = document.getElementById('lock-screen');
             if(!statusText) return;
-            statusText.innerText = "Đang mã hóa tín hiệu Server...";
-            lockContainer.classList.add('hidden');
+            statusText.innerText = "Đang kiểm tra trên Server, bạn có thể copy mã ID trước...";
+            document.getElementById('lock-device-code').value = deviceId;
+            lockContainer.classList.remove('hidden');
 
             fetch(AUTH_API + "?id=" + deviceId + "&t=" + new Date().getTime(), { cache: "no-store" })
                 .then(r => r.json())
                 .then(data => {
                     if (data.status === "approved" || data.status === "ok") {
                         localStorage.setItem('TDC_APPROVED_SINHLY', 'true');
+                        if ('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js'); }
                         lockScreen.style.opacity = '0';
                         setTimeout(() => { lockScreen.style.display = 'none'; document.body.style.overflow = 'auto'; }, 500);
                     } else {
@@ -398,6 +400,8 @@
 
       gtag('config', 'G-C6RSXNG6J3');
     </script>
+    <script defer src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link rel="preload" href="https://unpkg.com/@babel/standalone@7/babel.min.js" as="script">
 </head>
 
 
@@ -412,7 +416,7 @@
                 <div class="absolute inset-0 rounded-full border border-rose-500/30 animate-[ping_3s_infinite]"></div>
                 <div class="absolute inset-4 rounded-full border border-blue-400/50 animate-[ping_2s_infinite]"></div>
                 <div class="w-24 h-24 bg-gradient-to-br from-rose-600 to-red-800 rounded-full flex items-center justify-center shadow-[0_0_30px_rgba(225,29,72,0.6)] border border-rose-300 z-10 relative overflow-hidden">
-                    <i class="fas fa-fingerprint text-5xl text-blue-100 opacity-90"></i>
+                    <i class="fas fa-fingerprint text-5xl text-violet-100 opacity-90"></i>
                     <div class="absolute top-0 w-full h-1 bg-white shadow-[0_0_15px_white] animate-[radar_2s_linear_infinite]"></div>
                 </div>
                 <div class="absolute -top-2 -right-2 w-10 h-10 bg-slate-800/80 x-backdrop-blur-sm rounded-full border border-slate-600 flex items-center justify-center shadow-[0_0_15px_rgba(16,185,129,0.5)] z-20">
@@ -427,14 +431,14 @@
                 <div class="relative w-full mb-6 group cursor-pointer" onclick="copyDeviceId()">
                     <div class="absolute inset-0 bg-rose-500/10 rounded-2xl blur-xl group-hover:bg-rose-500/30 transition-all duration-500"></div>
                     <input type="text" id="lock-device-code" class="w-full bg-slate-900/95 x-backdrop-blur-lg border border-slate-700/50 hover:border-rose-500/80 text-center text-rose-300 font-black text-3xl tracking-[0.15em] rounded-2xl py-5 relative z-10 select-none cursor-pointer shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)] transition-all duration-300" readonly>
-                    <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-blue-900 text-blue-200 text-[10px] font-bold px-3 py-1 rounded-full z-20 border border-blue-700 shadow-lg tracking-widest uppercase">DEVICE ID</div>
+                    <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-violet-900 text-blue-200 text-[10px] font-bold px-3 py-1 rounded-full z-20 border border-blue-700 shadow-lg tracking-widest uppercase">DEVICE ID</div>
                 </div>
                 
                 <button id="copyBtn" onclick="copyDeviceId()" class="relative w-full overflow-hidden group bg-slate-800/80 x-backdrop-blur-sm hover:bg-slate-700/90 text-white font-bold py-4 px-4 rounded-xl shadow-[0_10px_20px_rgba(0,0,0,0.3)] border border-slate-600 transition-all mb-4 flex items-center justify-center gap-3">
                     <div class="absolute inset-0 w-1/4 bg-white/5 -skew-x-12 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]"></div>
                     <i class="fas fa-paste text-xl text-rose-400"></i> <span class="tracking-wide">SAO CHÉP MÃ THIẾT BỊ</span>
                 </button>
-                <button onclick="verifyWithServer()" class="w-full bg-transparent hover:bg-blue-900/20 text-cyan-500 hover:text-rose-400 font-bold py-3 px-4 border border-blue-900/30 hover:border-rose-500/40 rounded-xl transition-all flex items-center justify-center gap-2 group">
+                <button onclick="verifyWithServer()" class="w-full bg-transparent hover:bg-violet-900/20 text-fuchsia-500 hover:text-rose-400 font-bold py-3 px-4 border border-blue-900/30 hover:border-rose-500/40 rounded-xl transition-all flex items-center justify-center gap-2 group">
                     <i class="fas fa-sync-alt group-hover:rotate-180 transition-transform duration-500"></i> Xác minh
                 </button>
             </div>
@@ -459,7 +463,7 @@
                     <span id="bookmarkCount" class="absolute -top-1 -right-1 bg-gradient-to-tr from-red-600 to-pink-500 text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full hidden shadow-lg">0</span>
                 </button>
                 
-                <button onclick="toggleNotificationSidebar()" class="relative w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-slate-100 dark:bg-white/5 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-white/10 hover:text-blue-500 dark:hover:text-blue-400 transition-all duration-300 shadow-sm border border-slate-200/50 dark:border-white/5 mr-1 sm:mr-2">
+                <button onclick="toggleNotificationSidebar()" class="relative w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-slate-100 dark:bg-white/5 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-white/10 hover:text-violet-500 dark:hover:text-violet-400 transition-all duration-300 shadow-sm border border-slate-200/50 dark:border-white/5 mr-1 sm:mr-2">
                     <i id="bellIcon" class="fas fa-bell text-sm sm:text-base transition-transform origin-top"></i>
                     <span id="notifBadge" class="absolute top-0 right-0 w-3 h-3 bg-red-500 border-2 border-white dark:border-slate-900 rounded-full hidden z-10"></span>
                     <span id="notifPing" class="absolute top-0 right-0 w-3 h-3 bg-red-500 rounded-full animate-ping hidden"></span>
@@ -479,7 +483,7 @@
             <div class="relative bg-white dark:bg-slate-900 rounded-[15px] overflow-hidden px-3 py-2.5 flex items-center">
                 <div class="absolute inset-0 bg-gradient-to-r from-cyan-400/15 to-indigo-500/15 blur opacity-60"></div>
                 <div class="w-8 flex-shrink-0 z-10 flex items-center justify-center border-r border-slate-200 dark:border-slate-700/80 mr-3 pr-2">
-                    <i class="fas fa-gift text-cyan-500 dark:text-cyan-400 text-lg animate-bounce"></i>
+                    <i class="fas fa-gift text-fuchsia-500 dark:text-fuchsia-400 text-lg animate-bounce"></i>
                 </div>
                 <div class="flex-1 overflow-hidden relative z-10 mask-edges">
                     <div class="marquee-wrapper">
@@ -689,7 +693,7 @@
                     </div>
                     
                     <div class="flex-1 flex flex-col justify-center">
-                        <span id="bdCategory" class="text-[10px] font-black text-cyan-500 uppercase tracking-widest bg-blue-50 dark:bg-blue-900/30 px-2 py-0.5 rounded w-max mb-2">CATEGORY</span>
+                        <span id="bdCategory" class="text-[10px] font-black text-fuchsia-500 uppercase tracking-widest bg-blue-50 dark:bg-violet-900/30 px-2 py-0.5 rounded w-max mb-2">CATEGORY</span>
                         <h2 id="bdTitle" class="font-heading font-black text-xl text-slate-800 dark:text-white leading-tight mb-2">Tên sách</h2>
                         <p class="text-xs text-slate-500 dark:text-slate-400 font-medium mb-3">Tài liệu lưu hành nội bộ<br>Hệ thống: TEAMDRCAT</p>
                         <div class="flex items-center gap-1 text-amber-500 text-xs">
@@ -730,7 +734,7 @@
         <div class="w-full relative max-w-5xl mx-auto border-x border-white/10 z-10 overflow-auto block" style="height: calc(100dvh - 65px); -webkit-overflow-scrolling: touch;">
             <!-- Loading Skeleton -->
             <div id="pdfLoader" class="absolute inset-0 flex flex-col items-center justify-center bg-black/90 text-white z-20 pointer-events-none transition-opacity duration-300">
-                <i class="fas fa-circle-notch fa-spin text-4xl text-cyan-500 mb-4 drop-shadow-lg"></i>
+                <i class="fas fa-circle-notch fa-spin text-4xl text-fuchsia-500 mb-4 drop-shadow-lg"></i>
                 <p class="font-medium animate-pulse text-slate-300 text-sm mb-2">Đang nạp dữ liệu. Hãy chờ tôi vài giây nhé ^^</p>
                 <p class="text-[10px] text-slate-400 max-w-xs text-center uppercase tracking-widest leading-relaxed">Nhấn nút [ <i class="fas fa-external-link-alt mx-1"></i> ] góc phải để mở full màn hình nếu bị lỗi.</p>
             </div>
@@ -1185,7 +1189,7 @@
             "Sinh Lý Tế Bào": "fa-microscope text-fuchsia-500",
             "Hệ Thần Kinh": "fa-brain text-purple-400",
             "Hệ Máu & Dịch Cơ Thể": "fa-droplet text-red-500",
-            "Hệ Tuần Hoàn - Hô Hấp": "fa-heartbeat text-cyan-500",
+            "Hệ Tuần Hoàn - Hô Hấp": "fa-heartbeat text-fuchsia-500",
             "Hệ Tiêu Hóa - Chuyển Hóa": "fa-apple-whole text-amber-500",
             "Hệ Thận - Tiết Niệu": "fa-kidneys text-indigo-500",
             "Hệ Nội Tiết - Sinh Dục": "fa-venus-mars text-pink-500",
@@ -1300,13 +1304,13 @@
                     ${isCompleted ? '<div class="absolute top-0 right-0 w-12 h-12 bg-gradient-to-bl from-emerald-500/20 to-transparent flex items-start justify-end rounded-tr-[24px]"><i class="fas fa-check text-emerald-500 p-2 text-sm sm:text-base"></i></div>' : ''}
                     
                     <div class="relative flex ${bentoClass.includes('flex-row') ? 'flex-row' : 'flex-col'} gap-3 sm:gap-4 z-10 h-full">
-                        <div class="${iconSize} flex-shrink-0 rounded-[16px] sm:rounded-[18px] ${isCompleted ? 'bg-gradient-to-br from-emerald-100 to-teal-50 dark:from-emerald-900/60 dark:to-teal-900/40 border border-emerald-200 dark:border-emerald-800' : 'bg-gradient-to-br from-cyan-50 to-blue-50 dark:from-cyan-900/40 dark:to-blue-900/20 border border-blue-100 dark:border-blue-800/50'} flex items-center justify-center group-hover:scale-105 group-hover:rotate-6 transition-transform duration-300 shadow-inner">
-                            <i class="fas ${isCompleted ? 'fa-shield-check text-emerald-500 text-xl' : 'fa-laptop-medical text-cyan-500 text-lg'}"></i>
+                        <div class="${iconSize} flex-shrink-0 rounded-[16px] sm:rounded-[18px] ${isCompleted ? 'bg-gradient-to-br from-emerald-100 to-teal-50 dark:from-emerald-900/60 dark:to-teal-900/40 border border-emerald-200 dark:border-emerald-800' : 'bg-gradient-to-br from-cyan-50 to-blue-50 dark:from-cyan-900/40 dark:to-blue-900/20 border border-violet-100 dark:border-violet-800/50'} flex items-center justify-center group-hover:scale-105 group-hover:rotate-6 transition-transform duration-300 shadow-inner">
+                            <i class="fas ${isCompleted ? 'fa-shield-check text-emerald-500 text-xl' : 'fa-laptop-medical text-fuchsia-500 text-lg'}"></i>
                         </div>
                         <div class="flex-1 flex flex-col justify-center min-w-0">
                             <span class="text-[8px] sm:text-[9px] font-black px-2 py-0.5 w-max rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-1.5 sm:mb-2">${caseItem.category}</span>
-                            <h3 class="font-heading font-bold text-slate-800 dark:text-white ${textClamp} leading-tight sm:leading-snug group-hover:text-cyan-500 dark:group-hover:text-cyan-400 transition-colors ${titleSize}">${caseItem.title}</h3>
-                            ${isBookmarked ? `<div class="mt-1.5 sm:mt-2 text-cyan-500 text-[10px] sm:text-xs flex items-center gap-1"><i class="fas fa-heart"></i> <span class="font-bold">Đã gắn Dấu Trang</span></div>` : ''}
+                            <h3 class="font-heading font-bold text-slate-800 dark:text-white ${textClamp} leading-tight sm:leading-snug group-hover:text-fuchsia-500 dark:group-hover:text-fuchsia-400 transition-colors ${titleSize}">${caseItem.title}</h3>
+                            ${isBookmarked ? `<div class="mt-1.5 sm:mt-2 text-fuchsia-500 text-[10px] sm:text-xs flex items-center gap-1"><i class="fas fa-heart"></i> <span class="font-bold">Đã gắn Dấu Trang</span></div>` : ''}
                         </div>
                     </div>
                     
@@ -1345,20 +1349,8 @@
 
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js')
-                    .then(registration => {
-                        console.log('SW V8 ready');
-                        if (navigator.onLine) {
-                            registration.update();
-                        }
-                    })
-                    .catch(e => console.error(e));
-            });
-            let refreshing = false;
-            navigator.serviceWorker.addEventListener('controllerchange', () => {
-                if (!refreshing) {
-                    window.location.reload();
-                    refreshing = true;
+                if (localStorage.getItem('TDC_APPROVED_SINHLY') === 'true') {
+                    navigator.serviceWorker.register('./sw.js').catch(err => console.error(err));
                 }
             });
         }
@@ -1627,7 +1619,7 @@
     <div id="notifSidebar" class="fixed top-0 right-0 h-full w-full sm:w-96 bg-white dark:bg-slate-900 shadow-2xl z-[120] transform translate-x-full transition-transform duration-300 flex flex-col border-l border-slate-200 dark:border-slate-800">
         <div class="px-5 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/80 dark:bg-slate-900/80 backdrop-blur-md pt-safe">
             <h3 class="font-bold text-slate-800 dark:text-white flex items-center gap-2">
-                <i class="fas fa-bell text-blue-500"></i> Thông báo mới
+                <i class="fas fa-bell text-violet-500"></i> Thông báo mới
             </h3>
             <button onclick="toggleNotificationSidebar()" class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/20 transition-colors">
                 <i class="fas fa-times"></i>
@@ -1718,8 +1710,8 @@
 
             let html = '';
             notifications.forEach(notif => {
-                let iconStr = '<i class="fas fa-info-circle text-blue-500"></i>';
-                let bgClass = 'bg-blue-50 dark:bg-blue-900/20 border-blue-100 dark:border-blue-800/50';
+                let iconStr = '<i class="fas fa-info-circle text-violet-500"></i>';
+                let bgClass = 'bg-blue-50 dark:bg-violet-900/20 border-violet-100 dark:border-violet-800/50';
                 
                 if (notif.type === 'alert') {
                     iconStr = '<i class="fas fa-exclamation-triangle text-rose-500"></i>';
